@@ -1,0 +1,13 @@
+{
+  "name": "sumoaws",
+  "version": "1.0.0",
+  "description": "Lambda functions using serverless framework to scrap information about fighters",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christ-off",
+  "license": "CC-BY-NC-SA-4.0",
+  "dependencies": {
+    "jsonframe-cheerio": "^3.0.1"
+  }
+}
