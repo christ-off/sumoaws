@@ -1,13 +1,23 @@
 {
   "name": "sumoaws",
   "version": "1.0.0",
-  "description": "Lambda functions using serverless framework to scrap information about fighters",
+  "description": "Lambda functions using serverless framework to scrap information about sumo fighters",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Christ-off",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christ-off/sumoaws"
+  },
   "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
-    "jsonframe-cheerio": "^3.0.1"
+    "htmlparser2": "^3.10.1"
+  },
+  "devDependencies": {
+    "dotenv": "^7.0.0",
+    "fs": "0.0.1-security",
+    "jest": "^24.7.1",
+    "nock": "^10.0.6"
   }
 }
