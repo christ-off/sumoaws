@@ -5,13 +5,14 @@ let htmlparser = require("htmlparser2");
 const EXPECTED_LINK = 'Rikishi.aspx?r=';
 
 /**
- * Will process an html text async
+ * Will process an html text async to get a list of links to rikishis
  * @param htmltext
  * @param callback with one argument array of string links
  * @returns {*}
  */
 exports.scrapRikishis = function (htmltext, callback) {
 
+  console.log("Scrapping content : " + htmltext.length + " bytes");
   // Will contain a list of Strings
   let count = 0;
   let result = [];
@@ -20,7 +21,6 @@ exports.scrapRikishis = function (htmltext, callback) {
     onattribute: function (name, value) {
       if (name === "href" && value.indexOf(EXPECTED_LINK) != -1) {
         count++;
-        console.log("Got link n°" + count +" on Rikishi :" + value);
         result.push(value);
       }
     },

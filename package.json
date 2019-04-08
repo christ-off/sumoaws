@@ -15,6 +15,7 @@
     "htmlparser2": "^3.10.1"
   },
   "devDependencies": {
+    "aws-sdk": "^2.437.0",
     "dotenv": "^7.0.0",
     "fs": "0.0.1-security",
     "jest": "^24.7.1",

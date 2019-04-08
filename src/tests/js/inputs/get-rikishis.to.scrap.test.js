@@ -27,7 +27,7 @@ describe('Tests with good request ', () => {
     }
 
     //When
-    handler.getRikishisToScrap("http://perdu.com/", callback);
+    handler.getRikishisToScrap("http://perdu.com", "/", callback);
   });
 
 });
@@ -51,7 +51,7 @@ describe('Tests with not found response ', () => {
     }
 
     //When
-    handler.getRikishisToScrap("http://perdu.com/", callback);
+    handler.getRikishisToScrap("http://perdu.com","/", callback);
   });
 
 });

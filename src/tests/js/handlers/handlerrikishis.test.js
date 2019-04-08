@@ -6,18 +6,21 @@
 const handler = require('../../../main/js/handlers/handlerrikishis');
 const nock = require('nock');
 const dotenv = require('dotenv');
+const fs = require('fs');
 
-const LINK = 'http://sumodb.sumogames.de/Rikishi.aspx?r=1123';
-const FAKE_HTML = "<html><body><a href='" + LINK + "'>Hakuho</a></body></html>";
+const LINK = 'Rikishi.aspx?r=1123';
+let rikishisHtml;
 
 describe('Execute Lambda in Mock env', () => {
 
-  beforeEach(() => {
+  beforeAll(() => {
     dotenv.config();
+    rikishisHtml = fs.readFileSync( 'src/tests/resources/rikishis.html');
   });
 
+
   beforeEach(() => {
-    nock(process.env['rikishisurl']).get('/').reply(200, FAKE_HTML);
+    nock(process.env['rikishishost']).get(process.env['rikishispath']).reply(200, rikishisHtml);
   });
 
   test('Get should return the expected content', done => {
@@ -25,8 +28,8 @@ describe('Execute Lambda in Mock env', () => {
     function callback(error, data) {
       // Then
       expect(data).toBeDefined();
-      expect(data.length).toBe(1);
-      expect(data[0]).toBe(LINK);
+      expect(data.length).toBe(663);
+      expect(data[0].indexOf(LINK)).not.toBe(-1);
       // Jest end of test
       done();
     }

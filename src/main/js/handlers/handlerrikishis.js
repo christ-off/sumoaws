@@ -1,21 +1,44 @@
 'use strict';
 
+/**
+ * First let's check that requirement are met
+ */
 const getter = require('../inputs/get-rikishis-to-scrap');
 const scrapper = require('../domain/scrap-rikishis');
+const sender = require('../outputs/sendurl');
 
-module.exports.startscrap = async (event, context, callback) => {
+/**
+ * This Lambda is not async
+ * I found easier to callback when having the content
+ * @param event
+ * @param context
+ * @param callback
+ */
+module.exports.startscrap = (event, context, callback) => {
 
   // START
   console.log('Start scraping');
   // Get Env
-  let rikishisurl = process.env['rikishisurl'];
+  let rikishishost = process.env['rikishishost'];
+  let rikishispath = process.env['rikishispath'];
   // Log Env
-  console.log('Going to scrap ', rikishisurl);
+  console.log('Going to scrap : ', rikishishost + rikishispath);
+
+  let handleLink = function (link) {
+    sender.sendUrl(link, "scraprikishi",
+      (error) => {
+        callback(error);
+      })
+      // nothing to do in success
+  };
 
   let processLinks = function (arrayOfLinks) {
     if (arrayOfLinks && arrayOfLinks.length > 0) {
-      // TODO call SNS for each link
-      console.log(JSON.stringify(arrayOfLinks));
+      console.log("Going to post to SNS " + arrayOfLinks.length + " links ");
+      arrayOfLinks.forEach( (link) => {
+        handleLink(link);
+      });
+      // When all links are sent
       callback(null, arrayOfLinks);
     } else {
       let error = new Error("No links to process");
@@ -26,6 +49,7 @@ module.exports.startscrap = async (event, context, callback) => {
 
   let processContent = function (content) {
     if (content) {
+      console.log("Getting content scrapped");
       scrapper.scrapRikishis(content, processLinks)
     } else {
       let error = new Error("Not going to scrap because of empty content");
@@ -36,8 +60,9 @@ module.exports.startscrap = async (event, context, callback) => {
 
   // Performs the Get
   let retrieveHtmlContent = function () {
-    if (rikishisurl) {
-      getter.getRikishisToScrap(rikishisurl, processContent);
+    if (rikishishost && rikishispath) {
+      console.log("Getting webpage to scrap");
+      getter.getRikishisToScrap(rikishishost, rikishispath, processContent);
     } else {
       let error = new Error("Mandatory Rikishis URL is empty.");
       console.error(error.message);
