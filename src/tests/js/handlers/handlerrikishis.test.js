@@ -8,8 +8,25 @@ const nock = require('nock');
 const dotenv = require('dotenv');
 const fs = require('fs');
 
-const LINK = 'Rikishi.aspx?r=1123';
+const LINK = 'http://sumodb.sumogames.de/Rikishi.aspx?r=1123';
 let rikishisHtml;
+
+describe('Execute Lambda without necessary env FIRST', () => {
+
+  test('Without env an error should be sent back', done => {
+
+    function callback(error, data) {
+      // Then
+      expect(error).toBeDefined();
+      expect(data).toBeUndefined();
+      done();
+    }
+
+    //When
+    handler.startscrap(null,null, callback);
+  });
+
+});
 
 describe('Execute Lambda in Mock env', () => {
 
@@ -17,7 +34,6 @@ describe('Execute Lambda in Mock env', () => {
     dotenv.config();
     rikishisHtml = fs.readFileSync( 'src/tests/resources/rikishis.html');
   });
-
 
   beforeEach(() => {
     nock(process.env['rikishishost']).get(process.env['rikishispath']).reply(200, rikishisHtml);
@@ -29,7 +45,7 @@ describe('Execute Lambda in Mock env', () => {
       // Then
       expect(data).toBeDefined();
       expect(data.length).toBe(663);
-      expect(data[0].indexOf(LINK)).not.toBe(-1);
+      expect(data[0]).toBe(LINK);
       // Jest end of test
       done();
     }

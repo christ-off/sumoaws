@@ -20,5 +20,5 @@ test('should output rikishis array', done => {
   }
 
   //When
-  handler.scrapRikishis(rikishisHtml,callback);
+  handler.scrapRikishis(rikishisHtml, "http://sumodb.sumogames.de", callback);
 });

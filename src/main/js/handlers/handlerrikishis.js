@@ -1,9 +1,6 @@
 'use strict';
 
-/**
- * First let's check that requirement are met
- */
-const getter = require('../inputs/get-rikishis-to-scrap');
+const getter = require('../inputs/get-content-to-scrap');
 const scrapper = require('../domain/scrap-rikishis');
 const sender = require('../outputs/sendurl');
 
@@ -17,7 +14,7 @@ const sender = require('../outputs/sendurl');
 module.exports.startscrap = (event, context, callback) => {
 
   // START
-  console.log('Start scraping');
+  console.log('Start scraping Rikishis List');
   // Get Env
   let rikishishost = process.env['rikishishost'];
   let rikishispath = process.env['rikishispath'];
@@ -50,7 +47,7 @@ module.exports.startscrap = (event, context, callback) => {
   let processContent = function (content) {
     if (content) {
       console.log("Getting content scrapped");
-      scrapper.scrapRikishis(content, processLinks)
+      scrapper.scrapRikishis(content, rikishishost, processLinks)
     } else {
       let error = new Error("Not going to scrap because of empty content");
       console.error(error.message);
@@ -62,7 +59,7 @@ module.exports.startscrap = (event, context, callback) => {
   let retrieveHtmlContent = function () {
     if (rikishishost && rikishispath) {
       console.log("Getting webpage to scrap");
-      getter.getRikishisToScrap(rikishishost, rikishispath, processContent);
+      getter.getContentToScrap(rikishishost, rikishispath, processContent);
     } else {
       let error = new Error("Mandatory Rikishis URL is empty.");
       console.error(error.message);

@@ -22,7 +22,7 @@ exports.sendUrl = function(url, topic, errorCallback) {
 
   sns.publish(params, (error) => {
     if (error) {
-      console.error("Error notifying " + url + " with message" + e.message);
+      console.error("Error notifying " + url + " with message" + error.message);
       console.error(error);
       errorCallback(error);
     } else {

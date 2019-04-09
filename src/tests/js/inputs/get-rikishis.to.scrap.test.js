@@ -3,7 +3,7 @@
  * https://scotch.io/tutorials/nodejs-tests-mocking-http-requests
  */
 
-const handler = require('../../../main/js/inputs/get-rikishis-to-scrap');
+const handler = require('../../../main/js/inputs/get-content-to-scrap');
 const nock = require('nock');
 
 const EXPECTED_RESPONSE = "this is the expected response";
@@ -27,7 +27,7 @@ describe('Tests with good request ', () => {
     }
 
     //When
-    handler.getRikishisToScrap("http://perdu.com", "/", callback);
+    handler.getContentToScrap("http://perdu.com", "/", callback);
   });
 
 });
@@ -51,7 +51,7 @@ describe('Tests with not found response ', () => {
     }
 
     //When
-    handler.getRikishisToScrap("http://perdu.com","/", callback);
+    handler.getContentToScrap("http://perdu.com","/", callback);
   });
 
 });

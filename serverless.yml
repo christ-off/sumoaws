@@ -22,7 +22,7 @@ provider:
 
 functions:
 
-  rikishisscrap:
+  scraprikishis:
     handler: src/main/js/handlers/handlerrikishis.startscrap
     description: On schedule, will parse riskishis main list and emit a SNS for each Rikishi
     timeout: 30 # sec
@@ -30,7 +30,7 @@ functions:
       - cron(0 0 * * ? *) # mn 0, hour 0, any day of month, whatever the day, any year)
 
   scraprikishi:
-    handler: src/main/js/handlers/handlerdetail.scraprikishi
+    handler: src/main/js/handlers/handlerrikishi.scraprikishi
     description: When trigger by SNS message containing url, will scrap one rikishi and stores into DynamoDB
     events:
       - sns: scraprikishi

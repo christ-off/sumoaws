@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Lambda functions using serverless framework to scrap information about sumo fighters",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test-with-coverage": "jest --coverage"
   },
   "author": "Christ-off",
   "repository": {
@@ -12,7 +13,8 @@
   },
   "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
-    "htmlparser2": "^3.10.1"
+    "htmlparser2": "^3.10.1",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "aws-sdk": "^2.437.0",

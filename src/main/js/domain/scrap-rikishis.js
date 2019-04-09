@@ -7,10 +7,11 @@ const EXPECTED_LINK = 'Rikishi.aspx?r=';
 /**
  * Will process an html text async to get a list of links to rikishis
  * @param htmltext
+ * @param rikishishost urls are retrived as relative, so host is needed
  * @param callback with one argument array of string links
  * @returns {*}
  */
-exports.scrapRikishis = function (htmltext, callback) {
+exports.scrapRikishis = function (htmltext, rikishishost, callback) {
 
   console.log("Scrapping content : " + htmltext.length + " bytes");
   // Will contain a list of Strings
@@ -21,7 +22,7 @@ exports.scrapRikishis = function (htmltext, callback) {
     onattribute: function (name, value) {
       if (name === "href" && value.indexOf(EXPECTED_LINK) != -1) {
         count++;
-        result.push(value);
+        result.push(rikishishost + "/" + value);
       }
     },
     onclosetag: function (name) {

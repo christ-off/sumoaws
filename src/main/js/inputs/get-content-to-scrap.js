@@ -8,13 +8,14 @@ let http = require('http');
  * @param path starting with /
  * @param callback : data maybe null
  */
-exports.getRikishisToScrap = function (host, path, callback) {
+exports.getContentToScrap = function (host, path, callback) {
 
-  console.log("Going to get : " + host + path);
+  const url = host + (path ? path : "");
+  console.log("Going to get : " + url);
 
   try {
 
-    http.get(host + path, (res) => {
+    http.get(url, (res) => {
 
       const {statusCode} = res;
 
