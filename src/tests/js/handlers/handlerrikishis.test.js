@@ -36,7 +36,7 @@ describe('Execute Lambda in Mock env', () => {
   });
 
   beforeEach(() => {
-    nock(process.env['rikishishost']).get(process.env['rikishispath']).reply(200, rikishisHtml);
+    nock(process.env['SUMODB_HOST']).get(process.env['RIKISHIS_PATH']).reply(200, rikishisHtml);
   });
 
   test('Get should return the expected content', done => {

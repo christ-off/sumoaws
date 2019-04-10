@@ -2,7 +2,7 @@
 
 const getter = require('../inputs/get-content-to-scrap');
 const scrapper = require('../domain/scrap-rikishis');
-const sender = require('../outputs/sendurl');
+const sender = require('../outputs/send-url');
 
 /**
  * This Lambda is not async
@@ -16,10 +16,10 @@ module.exports.startscrap = (event, context, callback) => {
   // START
   console.log('Start scraping Rikishis List');
   // Get Env
-  let rikishishost = process.env['rikishishost'];
-  let rikishispath = process.env['rikishispath'];
+  let sumodb_host = process.env['SUMODB_HOST'];
+  let rikishis_path = process.env['RIKISHIS_PATH'];
   // Log Env
-  console.log('Going to scrap : ', rikishishost + rikishispath);
+  console.log("Going to scrap : ", sumodb_host + rikishis_path);
 
   let handleLink = function (link) {
     sender.sendUrl(link, "scraprikishi",
@@ -31,7 +31,7 @@ module.exports.startscrap = (event, context, callback) => {
 
   let processLinks = function (arrayOfLinks) {
     if (arrayOfLinks && arrayOfLinks.length > 0) {
-      console.log("Going to post to SNS " + arrayOfLinks.length + " links ");
+      console.log(`Going to post to SNS ${arrayOfLinks.length} links `);
       arrayOfLinks.forEach( (link) => {
         handleLink(link);
       });
@@ -47,7 +47,7 @@ module.exports.startscrap = (event, context, callback) => {
   let processContent = function (content) {
     if (content) {
       console.log("Getting content scrapped");
-      scrapper.scrapRikishis(content, rikishishost, processLinks)
+      scrapper.scrapRikishis(content, sumodb_host, processLinks)
     } else {
       let error = new Error("Not going to scrap because of empty content");
       console.error(error.message);
@@ -57,9 +57,9 @@ module.exports.startscrap = (event, context, callback) => {
 
   // Performs the Get
   let retrieveHtmlContent = function () {
-    if (rikishishost && rikishispath) {
-      console.log("Getting webpage to scrap");
-      getter.getContentToScrap(rikishishost, rikishispath, processContent);
+    if (sumodb_host && rikishis_path) {
+      console.log("Getting web page to scrap");
+      getter.getContentToScrap(sumodb_host, rikishis_path, processContent);
     } else {
       let error = new Error("Mandatory Rikishis URL is empty.");
       console.error(error.message);

@@ -13,14 +13,18 @@ const moment = require('moment');
  *  Weight
  *  Shikona
  *  and later the picture through another lambda
+ * @param rikishi's id (same as rikishis url r parameter)
  * @param htmltext
  * @param callback with one argument the rikishi object
  * @returns {*}
  */
-exports.scrapRikishi = function (htmltext, callback) {
+exports.scrapRikishi = function (id, htmltext, callback) {
 
-  console.log("Scrapping content : " + htmltext.length + " bytes");
+  console.log(`Scrapping content : ${htmltext.length} bytes`);
+
   let rikishi = {};
+  rikishi.id = id;
+
   // Let's parse 'a' to find thos with rikishis links
   let count = 0;
   let inValTag = false;
@@ -37,7 +41,7 @@ exports.scrapRikishi = function (htmltext, callback) {
     },
     onclosetag: function (name) {
       if (name === 'html') {
-        console.log("Document done with " + JSON.stringify(rikishi));
+        console.log(`Document done with ${JSON.stringify(rikishi)}`);
         callback(rikishi);
       } else {
         inValTag = false;
@@ -118,11 +122,11 @@ exports.parseBirthdate = function(brutetext){
     return null;
   }
   // DO
-  var arr = birthdateRegExp.exec(brutetext);
+  let arr = birthdateRegExp.exec(brutetext);
   if (arr && arr.length === 1) {
     return moment(arr[0],'MMM DD YYYY', 'en');
   } else {
-    console.log("Not a birthdate : " + brutetext);
+    console.log(`Not a birthday : ${brutetext}`);
     return null;
   }
 };
@@ -148,10 +152,10 @@ exports.parseHeightOrWeight = function(brutetext, index){
     } else if (index === 2){
       return parseFloat(arr[index]);
     } else {
-      throw "Index " + index + " not supported";
+      throw `Index ${index} not supported`;
     }
   } else {
-    console.log("Not a height and weight : " + brutetext);
+    console.log(`Not a height and weight : ${brutetext}`);
     return null;
   }
 };
@@ -165,7 +169,7 @@ exports.parseHeightOrWeight = function(brutetext, index){
 exports.parseName = function(brutetext){
   let words = brutetext.split(' ');
   if (words.length <=1) {
-    console.log("Unexpected name format : " + brutetext);
+    console.log(`Unexpected name format : ${brutetext}`);
     return null;
   }
   return words[words.length-2];

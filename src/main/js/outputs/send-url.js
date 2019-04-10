@@ -11,9 +11,9 @@ const config = require('../config/config');
  * @param topic
  * @param errorCallback callback with error as parameter
  */
-exports.sendUrl = function(url, topic, errorCallback) {
+module.exports.sendUrl = function(url, topic, errorCallback) {
 
-  console.log("Going to notify for detail " + url);
+  console.log(`Going to notify for detail ${url}`);
 
   const params = {
     Message: url,
@@ -22,11 +22,11 @@ exports.sendUrl = function(url, topic, errorCallback) {
 
   sns.publish(params, (error) => {
     if (error) {
-      console.error("Error notifying " + url + " with message" + error.message);
+      console.error(`Error notifying ${url} with message ${error.message}`);
       console.error(error);
       errorCallback(error);
     } else {
-      console.log("Sent SNS Message with params" + JSON.stringify(params));
+      console.log(`Sent SNS Message with params : ${JSON.stringify(params)}`);
     }
   });
 

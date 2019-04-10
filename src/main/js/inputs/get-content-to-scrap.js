@@ -11,7 +11,7 @@ let http = require('http');
 exports.getContentToScrap = function (host, path, callback) {
 
   const url = host + (path ? path : "");
-  console.log("Going to get : " + url);
+  console.log(`Going to get : ${url}`);
 
   try {
 
@@ -21,7 +21,7 @@ exports.getContentToScrap = function (host, path, callback) {
 
       let error;
       if (statusCode !== 200) {
-        error = new Error('Request Failed on .' + host + host + '\n' + 'Status Code: ' + statusCode);
+        error = new Error(`Request Failed on .${host}${host} Status Code: ${statusCode}`);
       }
       if (error) {
         console.error(error.message);
@@ -39,7 +39,7 @@ exports.getContentToScrap = function (host, path, callback) {
       });
       res.on('end', () => {
         try {
-          console.log("All data retrieved " + rawData.length + " bytes");
+          console.log(`All data retrieved ${rawData.length} bytes`);
           callback(rawData);
         } catch (e) {
           console.error(e.message);
@@ -47,12 +47,12 @@ exports.getContentToScrap = function (host, path, callback) {
       });
 
     }).on('error', (e) => {
-      console.error("Unexpected error" + e.message);
+      console.error(`Unexpected error${e.message}`);
       console.error(e);
     });
 
   } catch (e) {
-    console.error("Unexpected http error" + e.message);
+    console.error(`Unexpected http error${e.message}`);
     console.error(e);
   }
 

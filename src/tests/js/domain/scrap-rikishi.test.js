@@ -15,6 +15,7 @@ describe('Testing Lambda', () => {
     function callback(data) {
       // Then
       expect(data).toBeDefined();
+      expect(data.id).toBe(42);
       expect(data.highestrank).toBe("Yokozuna");
       expect(data.realname).toBe("MÖNKHBAT Davaajargal");
       expect(data.birthdate.isSame("1985-03-11")).toBeTruthy();
@@ -28,7 +29,7 @@ describe('Testing Lambda', () => {
     }
 
     //When
-    handler.scrapRikishi(rikishiHtml, callback);
+    handler.scrapRikishi(42, rikishiHtml, callback);
   });
 
 });
