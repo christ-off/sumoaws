@@ -17,7 +17,6 @@ provider:
 
   iamRoleStatements:
     - Effect: "Allow"
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
       Action:
       - "dynamodb:Query"
       - "dynamodb:Scan"
@@ -25,10 +24,17 @@ provider:
       - "dynamodb:PutItem"
       - "dynamodb:UpdateItem"
       - "dynamodb:DeleteItem"
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
     - Effect: "Allow"
-      Resource: "*"
       Action:
       - "sns:*"
+      Resource: "*"
+
+custom:
+  dev:
+    deletion_policy: Delete
+  prod:
+    deletion_policy: Retain
 
 functions:
 
@@ -49,7 +55,7 @@ resources:
   Resources:
     RikishisDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
+      DeletionPolicy: ${self:custom.${opt:stage, self:provider.stage}.deletion_policy}
       Properties:
         AttributeDefinitions:
           -
@@ -62,7 +68,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
 
 package:
   exclude:

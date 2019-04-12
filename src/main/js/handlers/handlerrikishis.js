@@ -23,10 +23,9 @@ module.exports.startscrap = (event, context, callback) => {
 
   let handleLink = function (link) {
     sender.sendUrl(link, "scraprikishi",
-      (error) => {
+      (error,) => {
         callback(error);
       })
-      // nothing to do in success
   };
 
   let processLinks = function (arrayOfLinks) {

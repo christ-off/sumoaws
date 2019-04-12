@@ -1,8 +1,6 @@
 'use strict';
 
-const AWS = require('aws-sdk');
-const sns = new AWS.SNS();
-
+const aws = require('../provider/aws');
 const config = require('../config/config');
 
 /**
@@ -10,8 +8,9 @@ const config = require('../config/config');
  * @param url
  * @param topic
  * @param errorCallback callback with error as parameter
+ * @param successCallback callback with SNS post result
  */
-module.exports.sendUrl = function(url, topic, errorCallback) {
+module.exports.sendUrl = function(url, topic, errorCallback, successCallback) {
 
   console.log(`Going to notify for detail ${url}`);
 
@@ -20,13 +19,14 @@ module.exports.sendUrl = function(url, topic, errorCallback) {
     TopicArn: `arn:aws:sns:eu-west-3:${config.awsAccountId}:`+ topic,
   };
 
-  sns.publish(params, (error) => {
+  aws.sns.publish(params, (error, data) => {
     if (error) {
       console.error(`Error notifying ${url} with message ${error.message}`);
       console.error(error);
       errorCallback(error);
     } else {
-      console.log(`Sent SNS Message with params : ${JSON.stringify(params)}`);
+      console.log(`Sent SNS Message with params : ${params}, response : ${data}`);
+      successCallback(data);
     }
   });
 

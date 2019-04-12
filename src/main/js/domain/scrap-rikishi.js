@@ -13,7 +13,7 @@ const moment = require('moment');
  *  Weight
  *  Shikona
  *  and later the picture through another lambda
- * @param rikishi's id (same as rikishis url r parameter)
+ * @param id rikishi's id (same as rikishis url r parameter)
  * @param htmltext
  * @param callback with one argument the rikishi object
  * @returns {*}
@@ -101,7 +101,7 @@ exports.parseHighestRank = function(brutetext){
       return null;
     }
     // DO
-    var arr = rankRegExp.exec(brutetext);
+    let arr = rankRegExp.exec(brutetext);
     if (arr && arr.length === 1) {
       return arr[0].trim();
     } else {
@@ -145,7 +145,7 @@ exports.parseHeightOrWeight = function(brutetext, index){
     return null;
   }
   // DO
-  var arr = heightWeightRegExp.exec(brutetext);
+  let arr = heightWeightRegExp.exec(brutetext);
   if (arr && arr.length === 3) {
     if (index === 1) {
       return parseInt(arr[index]);

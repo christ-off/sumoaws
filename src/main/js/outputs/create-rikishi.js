@@ -1,9 +1,15 @@
 'use strict';
 
-const AWS = require('aws-sdk');
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const aws = require('../provider/aws');
 
-module.exports.create = (rikishi, fail, success) => {
+
+/**
+ * Create OR update a rikishi in DynamoDB
+ * @param rikishi
+ * @param errorCallback
+ * @param successCallback
+ */
+module.exports.create = (rikishi, errorCallback, successCallback) => {
 
   const timestamp = new Date().getTime();
 
@@ -14,13 +20,14 @@ module.exports.create = (rikishi, fail, success) => {
   params.Item.createdAt = timestamp;
   params.Item.updatedAt = timestamp;
 
-  dynamoDb.put(params, (error) => {
+  aws.dynamoDb.put(params, (error,data) => {
     // handle potential errors
     if (error) {
-      console.error(`Unable to create :${JSON.stringify(params)} message : ${error.message}`);
-      fail(error);
+      console.error(`Unable to create : ${params} message : ${error.message}`);
+      errorCallback(error);
+    } else {
+      console.log(`Rikishi ${JSON.stringify(rikishi)} saved. response : ${JSON.stringify(data)}`);
+      successCallback(data);
     }
-    // create a response
-    success(params);
   });
 };

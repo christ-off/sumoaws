@@ -9,14 +9,28 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 
 /**
+ * The "creator" creates records in DynamoDB
+ * We are going to mock it
+ */
+const creator = require('../../../main/js/outputs/create-rikishi');
+/**
+ * Let jest mock it
+ */
+jest.mock('../../../main/js/outputs/create-rikishi' );
+
+/**
  * Will hold rikishi page content loaded from test resources
  */
 let rikishiHtml;
 
-describe('Test getting paramter from url', () => {
+describe('Test getting parameter from url', () => {
 
-  test('Nominal rank cases filterring out date', () => {
+  test('Nominal extract of query string parameter', () => {
     expect(handler.getParameter("http://sumodb.sumogames.de/Rikishi.aspx?r=1123", "r")).toBe("1123");
+  });
+
+  test('Impossible extract of query string parameter', () => {
+    expect(handler.getParameter("http://sumodb.sumogames.de/Rikishi.aspx?r=1123", "TOTO")).toBeFalsy();
   });
 
 });
@@ -35,18 +49,15 @@ describe('Execute Rikishi (detail) in Mock env', () => {
 
   test('Get should return the rikishi', done => {
 
+    // Given
+    creator.create.mockImplementation( (rikishi, fail, success) => { success("SAVED"); });
+
+
     function callback(error, data) {
       // Then
       expect(data).toBeDefined();
-      expect(data.id).toBe(1123);
-      expect(data.highestrank).toBe("Yokozuna");
-      expect(data.realname).toBe("MÖNKHBAT Davaajargal");
-      expect(data.birthdate.isSame("1985-03-11")).toBeTruthy();
-      expect(data.shusshin).toBe("Mongolia, Ulan-Bator");
-      expect(data.height).toBe(192);
-      expect(data.weight).toBe(152.9);
-      expect(data.heya).toBe("Miyagino");
-      expect(data.shikona).toBe("Hakuho");
+      expect(data).toBe("SAVED");
+      expect(creator.create).toBeCalled();
       // Jest end of test
       done();
     }

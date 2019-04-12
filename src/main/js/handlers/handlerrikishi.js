@@ -64,10 +64,9 @@ module.exports.scraprikishi = (event, context, callback) => {
 };
 
 module.exports.getParameter = (url, theParameter) => {
-  var params = url.split('?')[1].split('&');
-
-  for (var i = 0; i < params.length; i++) {
-    var p=params[i].split('=');
+  const params = url.split('?')[1].split('&');
+  for (let i = 0; i < params.length; i++) {
+    const p=params[i].split('=');
     if (p[0] == theParameter) {
       return decodeURIComponent(p[1]);
     }
