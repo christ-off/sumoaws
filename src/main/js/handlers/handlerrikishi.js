@@ -44,7 +44,7 @@ module.exports.scraprikishi = (event, context, callback) => {
 
     // Performs the Get
     let retrieveHtmlContent = function () {
-      if (url) {
+      if (url && url.length > 0) {
         console.log(`Getting web page to scrap ${url}`);
         getter.getContentToScrap(url, null, processContent);
       } else {
@@ -64,12 +64,18 @@ module.exports.scraprikishi = (event, context, callback) => {
 };
 
 module.exports.getParameter = (url, theParameter) => {
-  const params = url.split('?')[1].split('&');
-  for (let i = 0; i < params.length; i++) {
-    const p=params[i].split('=');
-    if (p[0] == theParameter) {
-      return decodeURIComponent(p[1]);
+  // Checks
+  if (!url || url.length < 1){
+    return false;
+  } else {
+    // DO
+    const params = url.split('?')[1].split('&');
+    for (let i = 0; i < params.length; i++) {
+      const p = params[i].split('=');
+      if (p[0] == theParameter) {
+        return decodeURIComponent(p[1]);
+      }
     }
+    return false;
   }
-  return false;
 };

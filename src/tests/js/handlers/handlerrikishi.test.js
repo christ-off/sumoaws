@@ -45,6 +45,7 @@ describe('Execute Rikishi (detail) in Mock env', () => {
 
   beforeEach(() => {
     nock(process.env['RIKISHIS_PATH']).get("/Rikishi.aspx?r=1123").reply(200, rikishiHtml);
+    nock(process.env['RIKISHIS_PATH']).get("/Rikishi.aspx?r=0").reply(200, rikishiHtml);
   });
 
   test('Get should return the rikishi', done => {
@@ -96,6 +97,51 @@ describe('Execute Rikishi (detail) in Mock env', () => {
     };
 
     handler.scraprikishi(goodEvent, null, callback);
+  });
+
+  test('Get should return an error if content from url is missing', done => {
+
+    function callback(error, data) {
+      // Then
+      expect(error).toBeDefined();
+      // Jest end of test
+      done();
+    }
+
+    //When
+    const badEvent = {
+      "Records": [
+        {
+          "EventSource": "aws:sns",
+          "EventVersion": "1.0",
+          "EventSubscriptionArn": "arn:aws:sns:eu-west-3:{{accountId}}:ExampleTopic",
+          "Sns": {
+            "Type": "Notification",
+            "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
+            "TopicArn": "arn:aws:sns:eu-west-3:123456789012:ExampleTopic",
+            "Subject": "example subject",
+            "Message": "http://sumodb.sumogames.de/Rikishi.aspx?r=0",
+            "Timestamp": "1970-01-01T00:00:00.000Z",
+            "SignatureVersion": "1",
+            "Signature": "EXAMPLE",
+            "SigningCertUrl": "EXAMPLE",
+            "UnsubscribeUrl": "EXAMPLE",
+            "MessageAttributes": {
+              "Test": {
+                "Type": "String",
+                "Value": "TestString"
+              },
+              "TestBinary": {
+                "Type": "Binary",
+                "Value": "TestBinary"
+              }
+            }
+          }
+        }
+      ]
+    };
+
+    handler.scraprikishi(badEvent, null, callback);
   });
 
   test('Get should return an error with event missing URL', done => {
