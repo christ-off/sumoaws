@@ -1,7 +1,9 @@
 'use strict';
 
 const htmlparser = require("htmlparser2");
-const moment = require('moment');
+const dayjs = require("dayjs");
+const customParseFormat = require("dayjs/plugin/customParseFormat");
+dayjs.extend(customParseFormat);
 
 /**
  * Will process an html text async to get a Rikishi :
@@ -114,7 +116,7 @@ const birthdateRegExp = new RegExp("^\\S+\\s\\d+\\,\\s\\d{4}");
 /**
  * Reveives texts with our without age March 11, 1985 (34 years)
  * @param brutetext
- * @returns birthdate as moment
+ * @returns Date as javascript date
  */
 exports.parseBirthdate = function(brutetext){
   // Protect against bad cases
@@ -124,7 +126,7 @@ exports.parseBirthdate = function(brutetext){
   // DO
   let arr = birthdateRegExp.exec(brutetext);
   if (arr && arr.length === 1) {
-    return moment(arr[0],'MMM DD YYYY', 'en');
+    return dayjs(arr[0],'MMMM DD YYYY', 'en').toDate();
   } else {
     console.log(`Not a birthday : ${brutetext}`);
     return null;

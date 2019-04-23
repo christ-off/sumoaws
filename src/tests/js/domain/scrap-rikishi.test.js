@@ -1,6 +1,6 @@
 const handler = require('../../../main/js/domain/scrap-rikishi');
 const fs = require('fs');
-const moment = require('moment');
+const dayjs = require("dayjs");
 
 let rikishiHtml;
 
@@ -18,7 +18,7 @@ describe('Testing Lambda', () => {
       expect(data.id).toBe(42);
       expect(data.highestrank).toBe("Yokozuna");
       expect(data.realname).toBe("MÖNKHBAT Davaajargal");
-      expect(data.birthdate.isSame("1985-03-11")).toBeTruthy();
+      expect(dayjs(data.birthdate)).toEqual(dayjs("1985-03-11"));
       expect(data.shusshin).toBe("Mongolia, Ulan-Bator");
       expect(data.height).toBe(192);
       expect(data.weight).toBe(152.9);
@@ -49,8 +49,8 @@ describe('Testing helper functions', () => {
   });
 
   test('Birthdates', () => {
-    expect(handler.parseBirthdate("March 11, 1985 (34 years)").isSame("1985-03-11")).toBeTruthy();
-    expect(handler.parseBirthdate("July 24, 1972").isSame("1972-07-24")).toBeTruthy();
+    expect(dayjs(handler.parseBirthdate("March 11, 1985 (34 years)"))).toEqual(dayjs("1985-03-11"));
+    expect(dayjs(handler.parseBirthdate("July 24, 1972"))).toEqual(dayjs("1972-07-24"));
     expect(handler.parseBirthdate("")).toBeNull();
   });
 

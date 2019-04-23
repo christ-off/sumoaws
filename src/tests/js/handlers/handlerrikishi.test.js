@@ -7,6 +7,7 @@ const handler = require('../../../main/js/handlers/handlerrikishi');
 const nock = require('nock');
 const dotenv = require('dotenv');
 const fs = require('fs');
+const dayjs = require("dayjs");
 
 /**
  * The "creator" creates records in DynamoDB
@@ -59,6 +60,8 @@ describe('Execute Rikishi (detail) in Mock env', () => {
       expect(data).toBeDefined();
       expect(data).toBe("SAVED");
       expect(creator.create).toBeCalled();
+      expect(creator.create.mock.calls[0][0].id).toBe(1123);
+      expect(dayjs(creator.create.mock.calls[0][0].birthdate)).toEqual(dayjs("1985-03-11"));
       // Jest end of test
       done();
     }
@@ -101,7 +104,7 @@ describe('Execute Rikishi (detail) in Mock env', () => {
 
   test('Get should return an error if content from url is missing', done => {
 
-    function callback(error, data) {
+    function callback(error) {
       // Then
       expect(error).toBeDefined();
       // Jest end of test
@@ -146,7 +149,7 @@ describe('Execute Rikishi (detail) in Mock env', () => {
 
   test('Get should return an error with event missing URL', done => {
 
-    function callback(error, data) {
+    function callback(error) {
       // Then
       expect(error).toBeDefined();
       // Jest end of test
@@ -191,7 +194,7 @@ describe('Execute Rikishi (detail) in Mock env', () => {
 
   test('Get should return an error with fake event ', done => {
 
-    function callback(error, data) {
+    function callback(error) {
       // Then
       expect(error).toBeDefined();
       // Jest end of test

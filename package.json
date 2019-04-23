@@ -13,8 +13,8 @@
   },
   "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
-    "htmlparser2": "^3.10.1",
-    "moment": "^2.24.0"
+    "dayjs": "^1.8.12",
+    "htmlparser2": "^3.10.1"
   },
   "devDependencies": {
     "aws-sdk": "^2.437.0",
