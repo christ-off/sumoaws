@@ -3,7 +3,10 @@
 const htmlparser = require("htmlparser2");
 const dayjs = require("dayjs");
 const customParseFormat = require("dayjs/plugin/customParseFormat");
+const utc = require("dayjs/plugin/utc");
+
 dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 /**
  * Will process an html text async to get a Rikishi :
@@ -37,7 +40,7 @@ exports.scrapRikishi = function (id, htmltext, callback) {
       if (name === "td" && attributes.class && attributes.class === "val") {
         count++;
         inValTag = true;
-      } else if (name === "h2"){
+      } else if (name === "h2") {
         inTitle = true;
       }
     },
@@ -50,11 +53,11 @@ exports.scrapRikishi = function (id, htmltext, callback) {
         inTitle = false;
       }
     },
-    ontext : function(text){
+    ontext: function (text) {
       if (inTitle) {
         rikishi.shikona = exports.parseName(text);
-      } else if (inValTag){
-        switch(count) {
+      } else if (inValTag) {
+        switch (count) {
           case 1:
             rikishi.highestrank = exports.parseHighestRank(text);
             break;
@@ -68,7 +71,7 @@ exports.scrapRikishi = function (id, htmltext, callback) {
             rikishi.shusshin = text;
             break;
           case 5:
-            rikishi.height = exports.parseHeightOrWeight(text,1);
+            rikishi.height = exports.parseHeightOrWeight(text, 1);
             rikishi.weight = exports.parseHeightOrWeight(text, 2);
             break;
           case 6:
@@ -97,36 +100,37 @@ const rankRegExp = new RegExp("^\\S+\\s?\\d{0,2}");
  *
  * @param brutetext
  */
-exports.parseHighestRank = function(brutetext){
-    // Protect against bad cases
-    if (!brutetext){
-      return null;
-    }
-    // DO
-    let arr = rankRegExp.exec(brutetext);
-    if (arr && arr.length === 1) {
-      return arr[0].trim();
-    } else {
-      console.log("Not a rank : " + brutetext);
-      return null;
-    }
+exports.parseHighestRank = function (brutetext) {
+  // Protect against bad cases
+  if (!brutetext) {
+    return null;
+  }
+  // DO
+  let arr = rankRegExp.exec(brutetext);
+  if (arr && arr.length === 1) {
+    return arr[0].trim();
+  } else {
+    console.log("Not a rank : " + brutetext);
+    return null;
+  }
 };
 
 const birthdateRegExp = new RegExp("^\\S+\\s\\d+\\,\\s\\d{4}");
 /**
  * Reveives texts with our without age March 11, 1985 (34 years)
  * @param brutetext
- * @returns Date as javascript date
+ * @returns ISO_8601 millisecond-precision string, shifted to UTC
  */
-exports.parseBirthdate = function(brutetext){
+exports.parseBirthdate = function (brutetext) {
   // Protect against bad cases
-  if (!brutetext){
+  if (!brutetext) {
     return null;
   }
   // DO
   let arr = birthdateRegExp.exec(brutetext);
   if (arr && arr.length === 1) {
-    return dayjs(arr[0],'MMMM DD YYYY', 'en').toDate();
+    let parsed = dayjs.utc(arr[0], 'MMMM DD YYYY', 'en');
+    return parsed.utc().toISOString();
   } else {
     console.log(`Not a birthday : ${brutetext}`);
     return null;
@@ -141,9 +145,9 @@ const heightWeightRegExp = new RegExp("(\\d{3}) cm (\\d+\\.?\\d) kg");
  * @param index 1 for Height, 2 for Weight
  * @returns number height in cm or Weight in kg
  */
-exports.parseHeightOrWeight = function(brutetext, index){
+exports.parseHeightOrWeight = function (brutetext, index) {
   // Protect against bad cases
-  if (!brutetext){
+  if (!brutetext) {
     return null;
   }
   // DO
@@ -151,7 +155,7 @@ exports.parseHeightOrWeight = function(brutetext, index){
   if (arr && arr.length === 3) {
     if (index === 1) {
       return parseInt(arr[index]);
-    } else if (index === 2){
+    } else if (index === 2) {
       return parseFloat(arr[index]);
     } else {
       throw `Index ${index} not supported`;
@@ -168,11 +172,11 @@ exports.parseHeightOrWeight = function(brutetext, index){
  * Takayasu Akira
  * @param brutetext
  */
-exports.parseName = function(brutetext){
+exports.parseName = function (brutetext) {
   let words = brutetext.split(' ');
-  if (words.length <=1) {
+  if (words.length <= 1) {
     console.log(`Unexpected name format : ${brutetext}`);
     return null;
   }
-  return words[words.length-2];
+  return words[words.length - 2];
 };

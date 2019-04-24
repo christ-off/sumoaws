@@ -1,6 +1,11 @@
 const handler = require('../../../main/js/domain/scrap-rikishi');
 const fs = require('fs');
 const dayjs = require("dayjs");
+const customParseFormat = require("dayjs/plugin/customParseFormat");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 let rikishiHtml;
 
@@ -18,7 +23,7 @@ describe('Testing Lambda', () => {
       expect(data.id).toBe(42);
       expect(data.highestrank).toBe("Yokozuna");
       expect(data.realname).toBe("MÖNKHBAT Davaajargal");
-      expect(dayjs(data.birthdate)).toEqual(dayjs("1985-03-11"));
+      expect(data.birthdate).toEqual(dayjs.utc("1985-03-11").toISOString());
       expect(data.shusshin).toBe("Mongolia, Ulan-Bator");
       expect(data.height).toBe(192);
       expect(data.weight).toBe(152.9);
@@ -49,8 +54,8 @@ describe('Testing helper functions', () => {
   });
 
   test('Birthdates', () => {
-    expect(dayjs(handler.parseBirthdate("March 11, 1985 (34 years)"))).toEqual(dayjs("1985-03-11"));
-    expect(dayjs(handler.parseBirthdate("July 24, 1972"))).toEqual(dayjs("1972-07-24"));
+    expect(handler.parseBirthdate("March 11, 1985 (34 years)")).toEqual(dayjs.utc("1985-03-11").toISOString());
+    expect(handler.parseBirthdate("July 24, 1972")).toEqual(dayjs.utc("1972-07-24").toISOString());
     expect(handler.parseBirthdate("")).toBeNull();
   });
 

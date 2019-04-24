@@ -1,7 +1,12 @@
 'use strict';
 
 const aws = require('../provider/aws');
+const dayjs = require("dayjs");
+const customParseFormat = require("dayjs/plugin/customParseFormat");
+const utc = require("dayjs/plugin/utc");
 
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 /**
  * Create OR update a rikishi in DynamoDB
@@ -11,14 +16,12 @@ const aws = require('../provider/aws');
  */
 module.exports.create = (rikishi, errorCallback, successCallback) => {
 
-  const timestamp = new Date().getTime();
-
   let params;
   params = {};
   params.TableName = process.env['DYNAMODB_TABLE'];
   params.Item = rikishi;
-  params.Item.createdAt = timestamp;
-  params.Item.updatedAt = timestamp;
+  params.Item.createdAt = dayjs.utc().toISOString();
+  params.Item.updatedAt = params.Item.createdAt;
 
   aws.dynamoDb.put(params, (error,data) => {
     // handle potential errors

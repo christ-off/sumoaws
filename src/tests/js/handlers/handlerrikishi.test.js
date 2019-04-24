@@ -8,6 +8,12 @@ const nock = require('nock');
 const dotenv = require('dotenv');
 const fs = require('fs');
 const dayjs = require("dayjs");
+const customParseFormat = require("dayjs/plugin/customParseFormat");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
+
 
 /**
  * The "creator" creates records in DynamoDB
@@ -61,7 +67,7 @@ describe('Execute Rikishi (detail) in Mock env', () => {
       expect(data).toBe("SAVED");
       expect(creator.create).toBeCalled();
       expect(creator.create.mock.calls[0][0].id).toBe(1123);
-      expect(dayjs(creator.create.mock.calls[0][0].birthdate)).toEqual(dayjs("1985-03-11"));
+      expect(creator.create.mock.calls[0][0].birthdate).toEqual(dayjs.utc("1985-03-11").toISOString());
       // Jest end of test
       done();
     }
