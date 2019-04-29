@@ -21,21 +21,31 @@ module.exports.startscrap = (event, context, callback) => {
   // Log Env
   console.log("Going to scrap : ", sumodb_host + rikishis_path);
 
-  let handleLink = function (link) {
+  /**
+   * Call send url
+   * @param link
+   * @param isLastLink if true will trigger final callback
+   * @param arrayOfLinks We return the array for post logging
+   */
+  let handleLink = function (link,isLastLink,arrayOfLinks) {
     sender.sendUrl(link, "scraprikishi",
-      (error,) => {
+      (error) => {
         callback(error);
+      }, (data) => {
+        console.log(`Success sending ${link} with result ${data}`);
+        if (isLastLink){
+          console.log(`Job Done ${arrayOfLinks.length} links sent`);
+          callback(null, arrayOfLinks);
+        }
       })
   };
 
   let processLinks = function (arrayOfLinks) {
     if (arrayOfLinks && arrayOfLinks.length > 0) {
       console.log(`Going to post to SNS ${arrayOfLinks.length} links `);
-      arrayOfLinks.forEach( (link) => {
-        handleLink(link);
+      arrayOfLinks.forEach((link, index) => {
+        handleLink(link, index === arrayOfLinks.length-1, arrayOfLinks);
       });
-      // When all links are sent
-      callback(null, arrayOfLinks);
     } else {
       let error = new Error("No links to process");
       console.error(error.message);

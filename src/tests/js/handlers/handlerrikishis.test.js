@@ -11,6 +11,13 @@ const fs = require('fs');
 const LINK = 'http://sumodb.sumogames.de/Rikishi.aspx?r=1123';
 let rikishisHtml;
 
+/**
+ * We are going to replace send url with a Jest mock
+ */
+const sender = require('../../../main/js/outputs/send-url');
+jest.mock('../../../main/js/outputs/send-url');
+
+
 describe('Execute Lambda without necessary env FIRST', () => {
 
   test('Without env an error should be sent back', done => {
@@ -23,7 +30,7 @@ describe('Execute Lambda without necessary env FIRST', () => {
     }
 
     //When
-    handler.startscrap(null,null, callback);
+    handler.startscrap(null, null, callback);
   });
 
 });
@@ -32,7 +39,7 @@ describe('Execute Lambda in Mock env', () => {
 
   beforeAll(() => {
     dotenv.config();
-    rikishisHtml = fs.readFileSync( 'src/tests/resources/rikishis.html');
+    rikishisHtml = fs.readFileSync('src/tests/resources/rikishis.html');
   });
 
   beforeEach(() => {
@@ -41,17 +48,25 @@ describe('Execute Lambda in Mock env', () => {
 
   test('Get should return the expected content', done => {
 
+    // Given
+    sender.sendUrl.mockImplementation((url, topic, errorCallback, successCallback) => {
+      successCallback("DONE");
+    });
+
     function callback(error, data) {
       // Then
+
+      const NUMBER_OF_RIKISHIS = 663;
+      expect(sender.sendUrl.mock.calls.length).toBe(NUMBER_OF_RIKISHIS);
       expect(data).toBeDefined();
-      expect(data.length).toBe(663);
+      expect(data.length).toBe(NUMBER_OF_RIKISHIS);
       expect(data[0]).toBe(LINK);
       // Jest end of test
       done();
     }
 
     //When
-    handler.startscrap(null,null, callback);
+    handler.startscrap(null, null, callback);
   });
 
 });

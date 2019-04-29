@@ -51,6 +51,14 @@ functions:
     events:
       - sns: scraprikishi
 
+  list:
+    handler: src/main/js/handlers/listrikishis.get
+    events:
+      - http:
+          path: rikishis
+          method: get
+    cors: true
+
 resources:
   Resources:
     RikishisDynamoDbTable:
