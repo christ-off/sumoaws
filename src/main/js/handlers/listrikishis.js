@@ -1,22 +1,22 @@
 'use strict';
 
-const AWS = require('aws-sdk');
+const aws = require('../provider/aws');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const params = {
-  TableName: process.env['DYNAMODB_TABLE']
-};
 
 module.exports.get = (event, context, callback) => {
 
-  dynamoDb.scan(params, (error, result) => {
+  const params = {
+    TableName: process.env['DYNAMODB_TABLE']
+  };
+
+  aws.dynamoDb.scan(params, (error, result) => {
     // handle potential errors
     if (error) {
       console.error(error);
       callback(null, {
         statusCode: error.statusCode || 501,
         headers: { 'Content-Type': 'text/plain' },
-        body: 'Couldn\'t fetch the todos.',
+        body: 'Couldn\'t fetch the rikishis.',
       });
       return;
     }

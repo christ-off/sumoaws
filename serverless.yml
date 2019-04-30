@@ -48,6 +48,7 @@ functions:
   scraprikishi:
     handler: src/main/js/handlers/handlerrikishi.scraprikishi
     description: When trigger by SNS message containing url, will scrap one rikishi and stores into DynamoDB
+    reservedConcurrency: 1 # Be nice with the website : limit number of scraps
     events:
       - sns: scraprikishi
 

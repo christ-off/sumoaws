@@ -32,7 +32,7 @@ module.exports.startscrap = (event, context, callback) => {
       (error) => {
         callback(error);
       }, (data) => {
-        console.log(`Success sending ${link} with result ${data}`);
+        console.log(`Success sending ${link} with result ${JSON.stringify(data)}`);
         if (isLastLink){
           console.log(`Job Done ${arrayOfLinks.length} links sent`);
           callback(null, arrayOfLinks);
