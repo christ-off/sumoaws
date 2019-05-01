@@ -56,7 +56,7 @@ describe('Execute Lambda in Mock env', () => {
     function callback(error, data) {
       // Then
 
-      const NUMBER_OF_RIKISHIS = 663;
+      const NUMBER_OF_RIKISHIS = 105;
       expect(sender.sendUrl.mock.calls.length).toBe(NUMBER_OF_RIKISHIS);
       expect(data).toBeDefined();
       expect(data.length).toBe(NUMBER_OF_RIKISHIS);

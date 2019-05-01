@@ -13,6 +13,7 @@
   },
   "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "dayjs": "^1.8.12",
     "htmlparser2": "^3.10.1"
   },
