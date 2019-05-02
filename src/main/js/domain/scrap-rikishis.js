@@ -33,7 +33,7 @@ exports.scrapRikishis = function (htmltext, sumodbhost, callback) {
 
   let result = [];
 
-  const $ = cheerio.load(htmltext);
+  const $ = cheerio.load(htmltext,  { decodeEntities: false } );
   $('td.layoutright > table > tbody > tr').each(function (i) {
     let children = $(this).children();
     let highestRank = children.eq(4).html();

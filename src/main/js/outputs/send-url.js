@@ -25,7 +25,7 @@ module.exports.sendUrl = function(url, topic, errorCallback, successCallback) {
       console.error(error);
       errorCallback(error);
     } else {
-      console.log(`Sent SNS Message with params : ${params}, response : ${data}`);
+      console.log(`Sent SNS Message with params : ${JSON.stringify(params)}, response : ${JSON.stringify(data)}`);
       successCallback(data);
     }
   });

@@ -1,6 +1,6 @@
 'use strict';
 
-const htmlparser = require("htmlparser2");
+const cheerio = require("cheerio");
 const dayjs = require("dayjs");
 const customParseFormat = require("dayjs/plugin/customParseFormat");
 const utc = require("dayjs/plugin/utc");
@@ -30,61 +30,41 @@ exports.scrapRikishi = function (id, htmltext, callback) {
   let rikishi = {};
   rikishi.id = id;
 
-  // Let's parse 'a' to find thos with rikishis links
-  let count = 0;
-  let inValTag = false;
-  let inTitle = false;
-
-  let parser = new htmlparser.Parser({
-    onopentag: function (name, attributes) {
-      if (name === "td" && attributes.class && attributes.class === "val") {
-        count++;
-        inValTag = true;
-      } else if (name === "h2") {
-        inTitle = true;
-      }
-    },
-    onclosetag: function (name) {
-      if (name === 'html') {
-        console.log(`Document done with ${JSON.stringify(rikishi)}`);
-        callback(rikishi);
-      } else {
-        inValTag = false;
-        inTitle = false;
-      }
-    },
-    ontext: function (text) {
-      if (inTitle) {
-        rikishi.shikona = exports.parseName(text);
-      } else if (inValTag) {
-        switch (count) {
-          case 1:
-            rikishi.highestrank = exports.parseHighestRank(text);
-            break;
-          case 2:
-            rikishi.realname = text;
-            break;
-          case 3:
-            rikishi.birthdate = exports.parseBirthdate(text);
-            break;
-          case 4:
-            rikishi.shusshin = text;
-            break;
-          case 5:
-            rikishi.height = exports.parseHeightOrWeight(text, 1);
-            rikishi.weight = exports.parseHeightOrWeight(text, 2);
-            break;
-          case 6:
-            rikishi.heya = text;
-            break;
-          // ignoring other tags with val
-        }
-      }
+  const $ = cheerio.load(htmltext,  { decodeEntities: false } );
+  $('td.layoutright > table.rikishidata > tbody > tr > td > table.rikishidata > tbody > tr ').each(function (i) {
+    let children = $(this).children();
+    let category = children.eq(0).html();
+    let value = children.eq(1).html();
+    console.log(`n° ${i} category ${category} value ${value}`);
+    switch (category) {
+      case "Highest Rank":
+        rikishi.highestrank = exports.parseHighestRank(value);
+        break;
+      case "Real Name":
+        rikishi.realname = value;
+        break;
+      case "Birth Date":
+        rikishi.birthdate = exports.parseBirthdate(value);
+        break;
+      case "Shusshin":
+        rikishi.shusshin = value;
+        break;
+      case "Height and Weight":
+        rikishi.height = exports.parseHeightOrWeight(value, 1);
+        rikishi.weight = exports.parseHeightOrWeight(value, 2);
+        break;
+      case "Heya":
+        rikishi.heya = value;
+        break;
+      case "Shikona":
+        rikishi.shikona = exports.parseName(value);
+        break;
+      default:
+      // ignored Rikishi information
     }
-  }, {decodeEntities: true});
-  parser.write(htmltext);
-  parser.end();
-
+  });
+  console.log(`Rikishi done with ${JSON.stringify(rikishi)}`);
+  callback(rikishi);
 };
 
 const rankRegExp = new RegExp("^\\S+\\s?\\d{0,2}");

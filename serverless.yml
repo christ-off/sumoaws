@@ -54,6 +54,7 @@ functions:
 
   list:
     handler: src/main/js/handlers/listrikishis.get
+    description: Returns a list of all Rikishis (Warning 1MB max size from DynamoDB)
     events:
       - http:
           path: rikishis
