@@ -8,12 +8,39 @@
   - SNS
   - DynamoDB
   
+## Choices made
+
+- AWS
+  - NodeJS Lambdas
+  - DynamoDB
+  - S3
+- Serverless framework
+- JestJS tests
+- Packages
+  - cheerio : htmlparser2 is "low level" 
+  - dayjs : lighter than momentjs
+- Dev Packages
+  - dotenv  to load env values from .env files during tests
+  - fs to load resources files for tests
+  - nock to mock HTTP responses
+  - JestJS to test, mock, assert and get test coverage all in ONE   
+  
 ## TODOs
 
 - Scrapping list of sumo fighters : OK
-- Scrapping detail : WIP
-  - Saving to DynamoDB
+- Scrapping detail : OK
+  - Saving to DynamoDB : OK
+  Current is missing (have to scrap it from webpage)
 - Scrapping picture
-  - Generate miniature (optionnal in first version)
-- Rest API to get rikishis list,  rikishi detail, picture, ... heya
-- Mobile App to consume REST API   
+  - Generate miniature (optional in first version)
+- Rest API to get rikishis 
+  - list of all rikishis : OK
+  - rikishi detail
+  - picture
+  - heyas 
+- Mobile App to consume REST API
+
+## Notes
+
+- Serve mock local content using serve
+`npm install -g serve`

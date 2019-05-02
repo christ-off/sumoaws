@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Lambda functions using serverless framework to scrap information about sumo fighters",
   "scripts": {
+    "serve": "serve",
     "test": "jest",
     "test-with-coverage": "jest --coverage"
   },
