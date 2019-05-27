@@ -29,6 +29,7 @@ describe('Testing Lambda', () => {
       expect(data.weight).toBe(152.9);
       expect(data.heya).toBe("Miyagino");
       expect(data.shikona).toBe("Hakuho");
+      expect(data.rank).toBe("Y1e");
       // Jest end of test
       done();
     }

@@ -31,6 +31,8 @@ exports.scrapRikishi = function (id, htmltext, callback) {
   rikishi.id = id;
 
   const $ = cheerio.load(htmltext,  { decodeEntities: false } );
+
+  // Scrap common Rikishi information
   $('td.layoutright > table.rikishidata > tbody > tr > td > table.rikishidata > tbody > tr ').each(function (i) {
     let children = $(this).children();
     let category = children.eq(0).html();
@@ -63,6 +65,17 @@ exports.scrapRikishi = function (id, htmltext, callback) {
       // ignored Rikishi information
     }
   });
+
+  // Scap rank from the basho table (last line)
+  // Let's read all the line and get the rank
+  // at the end we have the latest current rank
+  $('.rikishi > tbody > tr').each(function(i){
+    let children = $(this).children();
+    let rank = children.eq(1).html();
+    rikishi.rank = rank;
+  });
+  // Use rank to determine Division
+
   console.log(`Rikishi done with ${JSON.stringify(rikishi)}`);
   callback(rikishi);
 };

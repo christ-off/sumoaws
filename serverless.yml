@@ -61,6 +61,24 @@ functions:
           method: get
     cors: true
 
+  divisions:
+    handler: src/main/js/handlers/divisions.getDivisions
+    description: Returns the list of supported Divisions
+    events:
+      - http:
+          path: divisions
+          method: get
+    cors: true
+
+  division:
+    handler: src/main/js/handlers/divisions.getDivision
+    description: Returns the content of a division (a list of Rikishis)
+    events:
+      - http:
+          path: divisions/{division}
+          method: get
+    cors: true
+
 resources:
   Resources:
     RikishisDynamoDbTable:
