@@ -3,7 +3,7 @@
  * https://scotch.io/tutorials/nodejs-tests-mocking-http-requests
  */
 
-const handler = require('../../../main/js/handlers/handlerrikishis');
+const handler = require('../../src/handlers/handlerrikishis');
 const nock = require('nock');
 const dotenv = require('dotenv');
 const fs = require('fs');
@@ -14,8 +14,8 @@ let rikishisHtml;
 /**
  * We are going to replace send url with a Jest mock
  */
-const sender = require('../../../main/js/outputs/send-url');
-jest.mock('../../../main/js/outputs/send-url');
+const sender = require('../../src/outputs/send-url');
+jest.mock('../../src/outputs/send-url');
 
 
 describe('Execute Lambda without necessary env FIRST', () => {
@@ -39,7 +39,7 @@ describe('Execute Lambda in Mock env', () => {
 
   beforeAll(() => {
     dotenv.config();
-    rikishisHtml = fs.readFileSync('src/tests/resources/rikishis.html');
+    rikishisHtml = fs.readFileSync('_tests_/rikishis.html');
   });
 
   beforeEach(() => {

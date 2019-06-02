@@ -1,4 +1,4 @@
-const ranks = require('../../../main/js/domain/ranks');
+const ranks = require('../../src/domain/ranks');
 
 describe('Testing Ranks operations and lookups', () => {
 

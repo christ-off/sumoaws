@@ -1,9 +1,9 @@
 
-const handler = require('../../../main/js/handlers/listrikishis');
+const handler = require('../../src/handlers/listrikishis');
 const dotenv = require('dotenv');
-const aws = require('../../../main/js/provider/aws');
+const aws = require('../../src/provider/aws');
 // Let's mock aws "provider"
-jest.mock('../../../main/js/provider/aws');
+jest.mock('../../src/provider/aws');
 
 describe('Execute Lambda in Mock env', () => {
 

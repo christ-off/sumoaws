@@ -3,7 +3,7 @@
  * https://scotch.io/tutorials/nodejs-tests-mocking-http-requests
  */
 
-const handler = require('../../../main/js/inputs/get-content-to-scrap');
+const handler = require('../../src/inputs/get-content-to-scrap');
 const nock = require('nock');
 
 const EXPECTED_RESPONSE = "this is the expected response";

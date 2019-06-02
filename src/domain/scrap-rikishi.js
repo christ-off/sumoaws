@@ -71,8 +71,7 @@ exports.scrapRikishi = function (id, htmltext, callback) {
   // at the end we have the latest current rank
   $('.rikishi > tbody > tr').each(function(i){
     let children = $(this).children();
-    let rank = children.eq(1).html();
-    rikishi.rank = rank;
+    rikishi.rank = children.eq(1).html();
   });
   // Use rank to determine Division
 

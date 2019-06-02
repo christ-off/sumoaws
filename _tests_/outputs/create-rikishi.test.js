@@ -3,11 +3,11 @@
  * https://scotch.io/tutorials/nodejs-tests-mocking-http-requests
  */
 
-const tested = require('../../../main/js/outputs/create-rikishi');
-const config = require('../../../main/js/config/config');
-const aws = require('../../../main/js/provider/aws');
+const tested = require('../../src/outputs/create-rikishi');
+const aws = require('../../src/provider/aws');
+
 // Let's mock aws "provider"
-jest.mock('../../../main/js/provider/aws');
+jest.mock('../../src/provider/aws');
 
 const FAKE_RIKISHI = {
   id: 42
@@ -56,7 +56,7 @@ test('Error case', done => {
     done();
   }
 
-  function sucessCallback(data) {
+  function sucessCallback() {
     throw new Error('Success callback should not have been called');
   }
 

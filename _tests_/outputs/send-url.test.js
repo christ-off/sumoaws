@@ -3,11 +3,11 @@
  * https://scotch.io/tutorials/nodejs-tests-mocking-http-requests
  */
 
-const tested = require('../../../main/js/outputs/send-url');
-const config = require('../../../main/js/config/config');
-const aws = require('../../../main/js/provider/aws');
+const tested = require('../../src/outputs/send-url');
+const config = require('../../src/config/config');
+const aws = require('../../src/provider/aws');
 // Let's mock aws "provider"
-jest.mock('../../../main/js/provider/aws');
+jest.mock('../../src/provider/aws');
 
 // Some constants to use and to expect
 const SENT_URL = "SENT_URL";

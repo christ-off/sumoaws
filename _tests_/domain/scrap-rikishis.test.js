@@ -1,4 +1,4 @@
-const handler = require('../../../main/js/domain/scrap-rikishis');
+const handler = require('../../src/domain/scrap-rikishis');
 
 const EXPECTED_NUMBER_FILTERED_RIKISHIS = 105;
 
@@ -6,7 +6,7 @@ const fs = require('fs');
 
 let rikishisHtml;
 beforeAll(() => {
-  rikishisHtml = fs.readFileSync( 'src/tests/resources/rikishis.html');
+  rikishisHtml = fs.readFileSync( '_tests_/rikishis.html');
 
 });
 

@@ -98,3 +98,12 @@ exports.getFullRank = function (shortRank) {
 exports.getDivisions =  function(){
   return [ DIV_MAKUUCHI, DIV_JURYO ];
 };
+
+/**
+ * Lower ranks rikishis are not used yet in application
+ * @param rank {string} full rank names
+ * @returns {boolean}
+ */
+exports.isRankAccepted = function(rank){
+  return RANKS_ARRAY.indexOf(rank) > -1;
+};

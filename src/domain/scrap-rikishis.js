@@ -1,6 +1,7 @@
 'use strict';
 
-let cheerio = require("cheerio");
+const cheerio = require("cheerio");
+const ranks = require("./ranks");
 
 /**
  * Will process an html text async to get a list of links to rikishis
@@ -20,7 +21,7 @@ exports.scrapRikishis = function (htmltext, sumodbhost, callback) {
     let children = $(this).children();
     let highestRank = children.eq(4).html();
     let linkItem = children.eq(0).children().eq(0).attr('href');
-    let isRankAccepted = (RANKS_ARRAY.indexOf(highestRank) > -1);
+    let isRankAccepted = ranks.isRankAccepted(highestRank);
     if (isRankAccepted) {
       console.log(`n° ${i} rank ${highestRank} link ${linkItem}`);
       result.push(sumodbhost + "/" + linkItem);

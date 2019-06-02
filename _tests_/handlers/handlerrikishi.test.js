@@ -3,7 +3,7 @@
  * https://scotch.io/tutorials/nodejs-tests-mocking-http-requests
  */
 
-const handler = require('../../../main/js/handlers/handlerrikishi');
+const handler = require('../../src/handlers/handlerrikishi');
 const nock = require('nock');
 const dotenv = require('dotenv');
 const fs = require('fs');
@@ -19,11 +19,11 @@ dayjs.extend(utc);
  * The "creator" creates records in DynamoDB
  * We are going to mock it
  */
-const creator = require('../../../main/js/outputs/create-rikishi');
+const creator = require('../../src/outputs/create-rikishi');
 /**
  * Let jest mock it
  */
-jest.mock('../../../main/js/outputs/create-rikishi' );
+jest.mock('../../src/outputs/create-rikishi' );
 
 /**
  * Will hold rikishi page content loaded from test resources
@@ -46,7 +46,7 @@ describe('Execute Rikishi (detail) in Mock env', () => {
 
   beforeAll(() => {
     dotenv.config();
-    rikishiHtml = fs.readFileSync( 'src/tests/resources/hakuho.html');
+    rikishiHtml = fs.readFileSync( '_tests_/hakuho.html');
 
   });
 

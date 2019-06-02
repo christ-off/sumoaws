@@ -39,21 +39,21 @@ custom:
 functions:
 
   scraprikishis:
-    handler: src/main/js/handlers/handlerrikishis.startscrap
+    handler: src/handlers/handlerrikishis.startscrap
     description: On schedule, will parse riskishis main list and emit a SNS for each Rikishi
     timeout: 30 # sec
     events:
       - cron(0 0 * * ? *) # mn 0, hour 0, any day of month, whatever the day, any year)
 
   scraprikishi:
-    handler: src/main/js/handlers/handlerrikishi.scraprikishi
+    handler: src/handlers/handlerrikishi.scraprikishi
     description: When trigger by SNS message containing url, will scrap one rikishi and stores into DynamoDB
     reservedConcurrency: 1 # Be nice with the website : limit number of scraps
     events:
       - sns: scraprikishi
 
   list:
-    handler: src/main/js/handlers/listrikishis.get
+    handler: src/handlers/listrikishis.get
     description: Returns a list of all Rikishis (Warning 1MB max size from DynamoDB)
     events:
       - http:
@@ -62,7 +62,7 @@ functions:
     cors: true
 
   divisions:
-    handler: src/main/js/handlers/divisions.getDivisions
+    handler: src/handlers/divisions.getDivisions
     description: Returns the list of supported Divisions
     events:
       - http:
@@ -71,7 +71,7 @@ functions:
     cors: true
 
   division:
-    handler: src/main/js/handlers/divisions.getDivision
+    handler: src/handlers/divisions.getDivision
     description: Returns the content of a division (a list of Rikishis)
     events:
       - http:
@@ -86,12 +86,12 @@ resources:
       DeletionPolicy: ${self:custom.${opt:stage, self:provider.stage}.deletion_policy}
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: N
+          - AttributeName: division
+            AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -100,5 +100,6 @@ resources:
 
 package:
   exclude:
-    - src/tests/**
+    - _site
+    - _tests_
     - .env

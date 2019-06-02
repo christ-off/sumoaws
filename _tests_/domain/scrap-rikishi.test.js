@@ -1,4 +1,4 @@
-const handler = require('../../../main/js/domain/scrap-rikishi');
+const handler = require('../../src/domain/scrap-rikishi');
 const fs = require('fs');
 const dayjs = require("dayjs");
 const customParseFormat = require("dayjs/plugin/customParseFormat");
@@ -12,7 +12,7 @@ let rikishiHtml;
 describe('Testing Lambda', () => {
 
   beforeAll(() => {
-    rikishiHtml = fs.readFileSync('src/tests/resources/hakuho.html');
+    rikishiHtml = fs.readFileSync('_tests_/hakuho.html');
   });
 
   test('should output rikishi data', done => {
