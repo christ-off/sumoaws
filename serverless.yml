@@ -88,8 +88,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: N
-          - AttributeName: division
-            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH

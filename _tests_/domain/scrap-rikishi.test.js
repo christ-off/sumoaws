@@ -7,15 +7,13 @@ const utc = require("dayjs/plugin/utc");
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 
-let rikishiHtml;
 
-describe('Testing Lambda', () => {
-
-  beforeAll(() => {
-    rikishiHtml = fs.readFileSync('_tests_/hakuho.html');
-  });
+describe('Testing Lambda and util functions on Rikishis', () => {
 
   test('should output rikishi data', done => {
+
+    // GIVEN
+    let rikishiHtml = fs.readFileSync('_tests_/hakuho.html');
 
     function callback(data) {
       // Then
@@ -30,6 +28,7 @@ describe('Testing Lambda', () => {
       expect(data.heya).toBe("Miyagino");
       expect(data.shikona).toBe("Hakuho");
       expect(data.rank).toBe("Y1e");
+      expect(data.division).toBe("Makuuchi");
       // Jest end of test
       done();
     }
@@ -38,9 +37,20 @@ describe('Testing Lambda', () => {
     handler.scrapRikishi(42, rikishiHtml, callback);
   });
 
-});
+  test('should output null on excluded Rikishi', done => {
 
-describe('Testing helper functions', () => {
+    let rikishiHtml = fs.readFileSync('_tests_/takaryu_naoya.html');
+
+    function callback(data) {
+      // Then
+      expect(data).toBeNull();
+      // Jest end of test
+      done();
+    }
+
+    //When
+    handler.scrapRikishi(42, rikishiHtml, callback);
+  });
 
   test('Nominal rank cases filterring out date', () => {
     expect(handler.parseHighestRank("Sekiwake")).toBe("Sekiwake");

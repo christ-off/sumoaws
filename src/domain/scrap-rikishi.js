@@ -4,6 +4,7 @@ const cheerio = require("cheerio");
 const dayjs = require("dayjs");
 const customParseFormat = require("dayjs/plugin/customParseFormat");
 const utc = require("dayjs/plugin/utc");
+const ranks = require("./ranks");
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
@@ -69,14 +70,22 @@ exports.scrapRikishi = function (id, htmltext, callback) {
   // Scap rank from the basho table (last line)
   // Let's read all the line and get the rank
   // at the end we have the latest current rank
-  $('.rikishi > tbody > tr').each(function(i){
+  $('.rikishi > tbody > tr').each(function(){
     let children = $(this).children();
     rikishi.rank = children.eq(1).html();
   });
-  // Use rank to determine Division
 
-  console.log(`Rikishi done with ${JSON.stringify(rikishi)}`);
-  callback(rikishi);
+  // Use rank to determine Division
+  rikishi.division = ranks.getDivision(rikishi.rank);
+
+  if (rikishi.division) {
+    console.log(`Rikishi done with ${JSON.stringify(rikishi)}`);
+    callback(rikishi);
+  } else {
+    console.log(`Rikishi excluded ${JSON.stringify(rikishi)}`);
+    callback(null);
+  }
+
 };
 
 const rankRegExp = new RegExp("^\\S+\\s?\\d{0,2}");

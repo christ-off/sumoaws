@@ -22,13 +22,17 @@ module.exports.scraprikishi = (event, context, callback) => {
     console.log('Start scraping a Rikishi');
 
     let handleRikishi = function (rikishi) {
-      creator.create(rikishi,
-        (error) => {
-          callback(error);
-        },
-        (message) => {
-          callback(null, message);
-        });
+      if (rikishi) {
+        creator.create(rikishi,
+          (error) => {
+            callback(error);
+          },
+          (message) => {
+            callback(null, message);
+          });
+      } else {
+        callback(null,null);
+      }
     };
 
     let processContent = function (content) {
@@ -72,7 +76,7 @@ module.exports.getParameter = (url, theParameter) => {
     const params = url.split('?')[1].split('&');
     for (let i = 0; i < params.length; i++) {
       const p = params[i].split('=');
-      if (p[0] == theParameter) {
+      if (p[0] === theParameter) {
         return decodeURIComponent(p[1]);
       }
     }
