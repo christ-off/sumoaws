@@ -13,54 +13,39 @@ const FAKE_RIKISHI = {
   id: 42
 };
 
-test('Nominal case', done => {
+describe('Persisting Rikishis', () => {
 
-  // Given
-  aws.dynamoDb.put = jest.fn().mockImplementation(
-    (params, callback) => {
-      callback(null, "SAVED");
-    }
-  );
+  test('Nominal case', async () => {
 
-  function errorCallback() {
-    throw new Error('Error callback should not have been called');
-  }
+    expect.assertions(4);
 
-  function sucessCallback(data) {
-    // Then
+    // GIVEN
+    aws.putPromise = jest.fn().mockImplementation((params) => {
+      return new Promise((resolve) => {
+        process.nextTick(() => resolve("SAVED"));
+      });
+    });
+
+    // WHEN
+    const data = await tested.create(FAKE_RIKISHI);
+
+    // THEN
     expect(data).toBeDefined();
     expect(data).toBe("SAVED");
-    expect(aws.dynamoDb.put.mock.calls.length).toBe(1);
-    expect(aws.dynamoDb.put.mock.calls[0][0]).toEqual({ Item: FAKE_RIKISHI} );
-    // Jest end of test
-    done();
-  }
+    expect(aws.putPromise.mock.calls.length).toBe(1);
+    expect(aws.putPromise.mock.calls[0][0]).toEqual({Item: FAKE_RIKISHI});
 
-  //When
-  tested.create(FAKE_RIKISHI, errorCallback, sucessCallback);
+  });
 
-});
+  test('Error case', async () => {
 
-test('Error case', done => {
+    // GIVEN
+    aws.putPromise = jest.fn().mockImplementation( () => { Promise.reject( new Error("ERROR") ) } );
+    // WHEN
+    await tested.create(FAKE_RIKISHI).rejects
+    // THEN
+    .toThrow();
 
-// Given
-  aws.dynamoDb.put = jest.fn().mockImplementation(
-    (params, callback) => {
-      callback(new Error("ERROR"));
-    }
-  );
-
-  function errorCallback(error) {
-    expect(error).toEqual(new Error("ERROR"));
-    // Jest end of test
-    done();
-  }
-
-  function sucessCallback() {
-    throw new Error('Success callback should not have been called');
-  }
-
-  //When
-  tested.create(FAKE_RIKISHI, errorCallback, sucessCallback);
+  });
 
 });

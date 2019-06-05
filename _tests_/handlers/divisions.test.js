@@ -32,7 +32,7 @@ describe('Testing divisions', () => {
       },
       "TableName": process.env['DYNAMODB_TABLE']
     }
-    aws.scan = jest.fn().mockImplementation((params) => {
+    aws.scanPromise = jest.fn().mockImplementation((params) => {
       return new Promise((resolve, reject) => {
         process.nextTick(() => resolve(expectedFakeRikishis));
       });
@@ -43,7 +43,7 @@ describe('Testing divisions', () => {
     const result = await handler.getDivision(event, null);
 
     // THEN
-    expect(aws.scan.mock.calls[0][0]).toEqual(expectedParams);
+    expect(aws.scanPromise.mock.calls[0][0]).toEqual(expectedParams);
     expect(result).toEqual({"body": "[{\"id\":\"1123\"},{\"id\":\"1124\"}]", "statusCode": 200});
 
   });

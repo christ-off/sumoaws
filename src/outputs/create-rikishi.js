@@ -11,10 +11,8 @@ dayjs.extend(utc);
 /**
  * Create OR update a rikishi in DynamoDB
  * @param rikishi
- * @param errorCallback
- * @param successCallback
  */
-module.exports.create = (rikishi, errorCallback, successCallback) => {
+module.exports.create = async (rikishi) => {
 
   let params;
   params = {};
@@ -23,14 +21,13 @@ module.exports.create = (rikishi, errorCallback, successCallback) => {
   params.Item.createdAt = dayjs.utc().toISOString();
   params.Item.updatedAt = params.Item.createdAt;
 
-  aws.dynamoDb.put(params, (error,data) => {
-    // handle potential errors
-    if (error) {
-      console.error(`Unable to create : ${params} message : ${error.message}`);
-      errorCallback(error);
-    } else {
-      console.log(`Rikishi ${JSON.stringify(rikishi)} saved. response : ${JSON.stringify(data)}`);
-      successCallback(data);
-    }
-  });
+  try {
+    let result = await aws.putPromise(params);
+    console.log(`Rikishi ${JSON.stringify(rikishi)} saved. response : ${JSON.stringify(result)}`);
+    return result;
+  } catch (error) {
+    console.error(`Unable to create : ${params} message : ${error.message}`, error);
+    throw error;
+  }
+
 };

@@ -38,7 +38,7 @@ module.exports.getDivision = async (event, context) => {
 
   console.log("Going to query " + JSON.stringify(params));
   try {
-    let result = await aws.scan(params);
+    let result = await aws.scanPromise(params);
     console.log("getDivision returning " + result.Items.length);
     return {
       statusCode: 200,

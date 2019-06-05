@@ -20,6 +20,14 @@ module.exports.addUrl = function(url) {
 };
 
 /**
+ * Add URLs
+ * @param urls
+ */
+module.exports.addUrls = function(urls) {
+  urlsToSend = urls;
+};
+
+/**
  * Send a SNS message with url as a message
  * @param errorCallback callback with error as parameter
  * @param successCallback callback with SNS post result

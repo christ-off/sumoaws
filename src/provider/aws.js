@@ -12,10 +12,19 @@ exports.dynamoDb = new AWS.DynamoDB.DocumentClient();
 exports.sns = new AWS.SNS();
 
 /**
- * Export AWS scan promise sto mock it easily
+ * Export AWS scan promise to mock it easily
  * @param params
  * @returns {Request<DocumentClient.ScanOutput, AWSError>}
  */
-exports.scan = async (params) => {
+exports.scanPromise = async (params) => {
   return exports.dynamoDb.scan(params).promise();
+};
+
+/**
+ * Export AWS put promise to mock it easily
+ * @param params
+ * @returns {Request<DocumentClient.ScanOutput, AWSError>}
+ */
+exports.putPromise = async (params) => {
+  return exports.dynamoDb.put(params).promise();
 };

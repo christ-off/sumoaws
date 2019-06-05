@@ -3,6 +3,26 @@
 const getter = require('../inputs/get-content-to-scrap');
 const scrapper = require('../domain/scrap-rikishi');
 const creator = require('../outputs/create-rikishi');
+const sender = require('../outputs/send-url');
+
+
+let nextRikishis(urls, currentError, callback){
+  if (urls.length == 0 ){
+    let message = 'Last Rikishi was processed';
+    console.log(message);
+    callback(null, message);
+  }  else {
+    sender.addUrls(urls);
+    sender.sendUrls(
+      (error) => {
+        callback(error);
+      },
+      (message) => {
+        callback(null, message);
+      }
+    );
+  }
+}
 
 /**
  * Scrap and create Rikishis
@@ -14,8 +34,15 @@ module.exports.scraprikishi = (event, context, callback) => {
 
   try {
 
-    const url = event.Records[0].Sns.Message;
-    let id = parseInt(exports.getParameter(url,'r'));
+    // URLS must be an array as a JSON String!
+    let urls = JSON.parse(event.Records[0].Sns.Message);
+    if (!Array.isArray ( urls )) {
+      throw `Input SNS Message content is not an array ${event.Records[0].Sns.Message}`;
+    }
+    // Prepare what we are working on
+    let url = urls.shift(); // return 1st element, removes it from array
+
+    let id = parseInt(exports.getParameter(urls[0],'r'));
     console.log(`Received ${url} id : ${id}`);
 
     // START

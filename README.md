@@ -40,6 +40,12 @@
   - heyas 
 - Mobile App to consume REST API
 
+## Lesson learned 
+
+- Tests everything (thanks Javascript)
+- JestJS is good
+- Doing async is easier than a callbacks of callbacks mess
+
 ## Notes
 
 - Serve mock local content using serve
