@@ -4,6 +4,8 @@ const getter = require('../inputs/get-content-to-scrap');
 const scrapper = require('../domain/scrap-rikishis');
 const sender = require('../outputs/send-url');
 
+
+
 /**
  * This Lambda is not async
  * I found easier to callback when having the content
@@ -27,24 +29,28 @@ module.exports.startscrap = (event, context, callback) => {
    * @param isLastLink if true will trigger final callback
    * @param arrayOfLinks We return the array for post logging
    */
-  let handleLink = function (link,isLastLink,arrayOfLinks) {
-    sender.sendUrl(link, "scraprikishi",
-      (error) => {
-        callback(error);
-      }, (data) => {
-        console.log(`Success sending ${link} with result ${JSON.stringify(data)}`);
-        if (isLastLink){
-          console.log(`Job Done ${arrayOfLinks.length} links sent`);
+  let handleLink = function (link, isLastLink, arrayOfLinks) {
+    sender.addUrl(link);
+    if (isLastLink) {
+
+      sender.sendUrls(
+        (error) => {
+          callback(error);
+        },
+        (data) => {
+          console.log(`Job Done ${arrayOfLinks.length} links sent with result ${JSON.stringify(data)}`);
           callback(null, arrayOfLinks);
         }
-      })
+      )
+    }
+    // else return right away as job is not done yet
   };
 
   let processLinks = function (arrayOfLinks) {
     if (arrayOfLinks && arrayOfLinks.length > 0) {
       console.log(`Going to post to SNS ${arrayOfLinks.length} links `);
       arrayOfLinks.forEach((link, index) => {
-        handleLink(link, index === arrayOfLinks.length-1, arrayOfLinks);
+        handleLink(link, index === arrayOfLinks.length - 1, arrayOfLinks);
       });
     } else {
       let error = new Error("No links to process");

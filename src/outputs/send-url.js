@@ -3,28 +3,44 @@
 const aws = require('../provider/aws');
 const config = require('../config/config');
 
+const TOPIC = "scraprikishi";
+
+/**
+ * Is going to hold urls to send on one packet
+ * @type {Array}
+ */
+let   urlsToSend = [];
+
+/**
+ * Add an url to the array
+ * @param url
+ */
+module.exports.addUrl = function(url) {
+  urlsToSend.push(url);
+};
+
 /**
  * Send a SNS message with url as a message
- * @param url
- * @param topic
  * @param errorCallback callback with error as parameter
  * @param successCallback callback with SNS post result
  */
-module.exports.sendUrl = function(url, topic, errorCallback, successCallback) {
+module.exports.sendUrls = function(errorCallback, successCallback) {
 
-  console.log(`Going to notify for detail ${url}`);
+  console.log(`Going send ${urlsToSend.length} urls`);
 
   const params = {
-    Message: url,
-    TopicArn: `arn:aws:sns:eu-west-3:${config.awsAccountId}:`+ topic,
+    Message: JSON.stringify(urlsToSend),
+    TopicArn: `arn:aws:sns:eu-west-3:${config.awsAccountId}:`+ TOPIC,
   };
 
   aws.sns.publish(params, (error, data) => {
     if (error) {
-      console.error(`Error notifying ${url} with message ${error.message}`);
+      // In case of error we don't empty urlsToSend (to allow another try )
+      console.error(`Error notifying ${urlsToSend.length} urls with message ${error.message}`);
       console.error(error);
       errorCallback(error);
     } else {
+      urlsToSend = [];
       console.log(`Sent SNS Message with params : ${JSON.stringify(params)}, response : ${JSON.stringify(data)}`);
       successCallback(data);
     }

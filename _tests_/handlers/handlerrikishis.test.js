@@ -49,15 +49,16 @@ describe('Execute Lambda in Mock env', () => {
   test('Get should return the expected content', done => {
 
     // Given
-    sender.sendUrl.mockImplementation((url, topic, errorCallback, successCallback) => {
+    sender.sendUrls.mockImplementation((errorCallback, successCallback) => {
       successCallback("DONE");
     });
+    sender.addUrl.mockImplementation(() => { });
 
     function callback(error, data) {
       // Then
 
       const NUMBER_OF_RIKISHIS = 105;
-      expect(sender.sendUrl.mock.calls.length).toBe(NUMBER_OF_RIKISHIS);
+      expect(sender.sendUrls.mock.calls.length).toBe(1);
       expect(data).toBeDefined();
       expect(data.length).toBe(NUMBER_OF_RIKISHIS);
       expect(data[0]).toBe(LINK);
