@@ -28,3 +28,12 @@ exports.scanPromise = async (params) => {
 exports.putPromise = async (params) => {
   return exports.dynamoDb.put(params).promise();
 };
+
+/**
+ * Export AWS SNS publish promise to mock it easily
+ * @param params
+ * @returns {Request<DocumentClient.ScanOutput, AWSError>}
+ */
+exports.publishPromise = async (params) => {
+  return exports.sns.publish(params).promise();
+};
