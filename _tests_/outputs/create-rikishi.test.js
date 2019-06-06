@@ -16,19 +16,15 @@ const FAKE_RIKISHI = {
 describe('Persisting Rikishis', () => {
 
   test('Nominal case', async () => {
-
     expect.assertions(4);
-
     // GIVEN
     aws.putPromise = jest.fn().mockImplementation(() => {
       return new Promise((resolve) => {
         process.nextTick(() => resolve("SAVED"));
       });
     });
-
     // WHEN
     const data = await tested.create(FAKE_RIKISHI);
-
     // THEN
     expect(data).toBeDefined();
     expect(data).toBe("SAVED");
@@ -38,7 +34,6 @@ describe('Persisting Rikishis', () => {
   });
 
   test('Error case', async () => {
-
     // GIVEN
     aws.putPromise = jest.fn().mockImplementation( () => { throw new Error("ERROR"); } );
     // WHEN
@@ -48,7 +43,6 @@ describe('Persisting Rikishis', () => {
     } catch (e) {
       expect(e.message).toMatch('ERROR');
     }
-
   });
 
 });
