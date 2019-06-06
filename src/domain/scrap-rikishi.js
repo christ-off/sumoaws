@@ -21,10 +21,9 @@ dayjs.extend(utc);
  *  and later the picture through another lambda
  * @param id rikishi's id (same as rikishis url r parameter)
  * @param htmltext
- * @param callback with one argument the rikishi object
- * @returns {*}
+ * @returns a Rikishi
  */
-exports.scrapRikishi = function (id, htmltext, callback) {
+exports.scrapRikishi = async (id, htmltext) => {
 
   console.log(`Scrapping content : ${htmltext.length} bytes`);
 
@@ -80,10 +79,10 @@ exports.scrapRikishi = function (id, htmltext, callback) {
 
   if (rikishi.division) {
     console.log(`Rikishi done with ${JSON.stringify(rikishi)}`);
-    callback(rikishi);
+    return rikishi;
   } else {
     console.log(`Rikishi excluded ${JSON.stringify(rikishi)}`);
-    callback(null);
+    return null;
   }
 
 };

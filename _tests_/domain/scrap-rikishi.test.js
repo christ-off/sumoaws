@@ -10,46 +10,40 @@ dayjs.extend(utc);
 
 describe('Testing Lambda and util functions on Rikishis', () => {
 
-  test('should output rikishi data', done => {
+  test('should output rikishi data', async () => {
+
+    expect.assertions(12);
 
     // GIVEN
     let rikishiHtml = fs.readFileSync('_tests_/hakuho.html');
 
-    function callback(data) {
-      // Then
-      expect(data).toBeDefined();
-      expect(data.id).toBe(42);
-      expect(data.highestrank).toBe("Yokozuna");
-      expect(data.realname).toBe("MÖNKHBAT Davaajargal");
-      expect(data.birthdate).toEqual(dayjs.utc("1985-03-11").toISOString());
-      expect(data.shusshin).toBe("Mongolia, Ulan-Bator");
-      expect(data.height).toBe(192);
-      expect(data.weight).toBe(152.9);
-      expect(data.heya).toBe("Miyagino");
-      expect(data.shikona).toBe("Hakuho");
-      expect(data.rank).toBe("Y1e");
-      expect(data.division).toBe("Makuuchi");
-      // Jest end of test
-      done();
-    }
-
     //When
-    handler.scrapRikishi(42, rikishiHtml, callback);
+    let data = await handler.scrapRikishi(42, rikishiHtml);
+
+    // Then
+    expect(data).toBeDefined();
+    expect(data.id).toBe(42);
+    expect(data.highestrank).toBe("Yokozuna");
+    expect(data.realname).toBe("MÖNKHBAT Davaajargal");
+    expect(data.birthdate).toEqual(dayjs.utc("1985-03-11").toISOString());
+    expect(data.shusshin).toBe("Mongolia, Ulan-Bator");
+    expect(data.height).toBe(192);
+    expect(data.weight).toBe(152.9);
+    expect(data.heya).toBe("Miyagino");
+    expect(data.shikona).toBe("Hakuho");
+    expect(data.rank).toBe("Y1e");
+    expect(data.division).toBe("Makuuchi");
+
+
   });
 
-  test('should output null on excluded Rikishi', done => {
-
+  test('should output null on excluded Rikishi', async () => {
+    // GIVEN
     let rikishiHtml = fs.readFileSync('_tests_/takaryu_naoya.html');
-
-    function callback(data) {
-      // Then
-      expect(data).toBeNull();
-      // Jest end of test
-      done();
-    }
-
-    //When
-    handler.scrapRikishi(42, rikishiHtml, callback);
+    // WHEN
+    let data =  await handler.scrapRikishi(42, rikishiHtml);
+    // THEN
+    expect(data).toBeNull();
   });
 
   test('Nominal rank cases filterring out date', () => {
@@ -71,11 +65,13 @@ describe('Testing Lambda and util functions on Rikishis', () => {
   });
 
   test('Height and Weight', () => {
-    expect(handler.parseHeightOrWeight("192 cm 152.9 kg",1)).toBe(192);
-    expect(handler.parseHeightOrWeight("192 cm 152.9 kg",2)).toBe(152.9);
-    function exceptionWrapper(){
-      handler.parseHeightOrWeight("192 cm 152.9 kg",3);
+    expect(handler.parseHeightOrWeight("192 cm 152.9 kg", 1)).toBe(192);
+    expect(handler.parseHeightOrWeight("192 cm 152.9 kg", 2)).toBe(152.9);
+
+    function exceptionWrapper() {
+      handler.parseHeightOrWeight("192 cm 152.9 kg", 3);
     }
+
     expect(exceptionWrapper).toThrow();
   });
 
