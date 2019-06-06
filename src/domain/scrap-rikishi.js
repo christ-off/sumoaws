@@ -25,6 +25,12 @@ dayjs.extend(utc);
  */
 exports.scrapRikishi = async (id, htmltext) => {
 
+  if (!htmltext || htmltext.length === 0){
+    console.error("Not scraping from null or empty html.  Returning null");
+    return null;
+  }
+  // else process
+
   console.log(`Scrapping content : ${htmltext.length} bytes`);
 
   let rikishi = {};
