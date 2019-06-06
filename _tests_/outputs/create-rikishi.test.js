@@ -20,7 +20,7 @@ describe('Persisting Rikishis', () => {
     expect.assertions(4);
 
     // GIVEN
-    aws.putPromise = jest.fn().mockImplementation((params) => {
+    aws.putPromise = jest.fn().mockImplementation(() => {
       return new Promise((resolve) => {
         process.nextTick(() => resolve("SAVED"));
       });
@@ -40,11 +40,14 @@ describe('Persisting Rikishis', () => {
   test('Error case', async () => {
 
     // GIVEN
-    aws.putPromise = jest.fn().mockImplementation( () => { Promise.reject( new Error("ERROR") ) } );
+    aws.putPromise = jest.fn().mockImplementation( () => { throw new Error("ERROR"); } );
     // WHEN
-    await tested.create(FAKE_RIKISHI).rejects
-    // THEN
-    .toThrow();
+    try {
+      await tested.create(FAKE_RIKISHI);
+      // THEN
+    } catch (e) {
+      expect(e.message).toMatch('ERROR');
+    }
 
   });
 

@@ -26,7 +26,7 @@ module.exports.create = async (rikishi) => {
     console.log(`Rikishi ${JSON.stringify(rikishi)} saved. response : ${JSON.stringify(result)}`);
     return result;
   } catch (error) {
-    console.error(`Unable to create : ${params} message : ${error.message}`, error);
+    console.error(`Unable to create : ${JSON.stringify(params)} message : ${error.message}`);
     throw error;
   }
 
