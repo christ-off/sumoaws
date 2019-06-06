@@ -14,6 +14,13 @@ dayjs.extend(utc);
  */
 module.exports.create = async (rikishi) => {
 
+  if (!rikishi){
+    console.warn("No rikishi to save.  Returning null");
+    return null;
+  }
+  // else process
+  console.log(`Going to save ${JSON.stringify(rikishi)}`);
+
   let params;
   params = {};
   params.TableName = process.env['DYNAMODB_TABLE'];
