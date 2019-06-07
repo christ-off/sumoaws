@@ -12,65 +12,39 @@ jest.mock('../../src/provider/aws');
 // Some constants to use and to expect
 const SENT_URL = "SENT_URL";
 const PARAMS = {
-  Message: JSON.stringify([SENT_URL,SENT_URL]),
+  Message: JSON.stringify([SENT_URL, SENT_URL]),
   TopicArn: `arn:aws:sns:eu-west-3:${config.awsAccountId}:scraprikishi`,
 };
 
 describe('Sending URLs', () => {
 
-  test('Nominal case', done => {
-
-    // Given
-    aws.sns.publish = jest.fn().mockImplementation(
-      (params, callback) => {
-        callback(null, "POSTED");
-      }
-    );
-
-    function errorCallback() {
-      throw new Error('Error callback should not have been called');
-    }
-
-    function sucessCallback(data) {
-      // Then
-      expect(data).toBeDefined();
-      expect(data).toBe("POSTED");
-      expect(aws.sns.publish.mock.calls.length).toBe(1);
-      expect(aws.sns.publish.mock.calls[0][0]).toEqual(PARAMS);
-      // Jest end of test
-      done();
-    }
-
-    //When
+  test('Nominal case', async () => {
+    expect.assertions(4);
+    // GIVEN
+    aws.publishPromise = jest.fn().mockImplementation(() => {
+      return new Promise((resolve) => {
+        process.nextTick(() => resolve("POSTED"));
+      });
+    });
+    // WHEN
     tested.addUrl(SENT_URL);
     tested.addUrl(SENT_URL);
-    tested.sendUrls(errorCallback, sucessCallback);
-
+    let data = await tested.sendUrls();
+    // THEN
+    expect(data).toBeDefined();
+    expect(data).toBe("POSTED");
+    expect(aws.publishPromise.mock.calls.length).toBe(1);
+    expect(aws.publishPromise.mock.calls[0][0]).toEqual(PARAMS);
   });
 
-  test('Error case', done => {
-
-    // Given
-    aws.sns.publish = jest.fn().mockImplementation(
-      (params, callback) => {
-        callback(new Error("ERROR"));
-      }
-    );
-
-    function errorCallback(error) {
-      expect(error).toEqual(new Error("ERROR"));
-      // Jest end of test
-      done();
-    }
-
-    function successCallback() {
-      throw new Error('Success callback should not have been called');
-    }
-
-    //When
+  test('Error case', async () => {
+    expect.assertions(1);
+    // GIVEN
+    aws.publishPromise = jest.fn().mockImplementation( () => { throw new Error("ERROR"); } );
+    // WHEN
     tested.addUrl(SENT_URL);
-    tested.sendUrls(errorCallback, successCallback);
-
+    let data = await tested.sendUrls();
+    // THEN
+    expect(data).toBeUndefined();
   });
-
 });
