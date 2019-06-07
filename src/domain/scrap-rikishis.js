@@ -7,10 +7,9 @@ const ranks = require("./ranks");
  * Will process an html text async to get a list of links to rikishis
  * @param htmltext
  * @param sumodbhost urls are retrived as relative, so host is needed
- * @param callback with one argument array of string links
- * @returns {*}
+ * @returns array of string links
  */
-exports.scrapRikishis = function (htmltext, sumodbhost, callback) {
+exports.scrapRikishis = async (htmltext, sumodbhost) => {
 
   console.log(`Scrapping content : ${htmltext.length} bytes`);
 
@@ -30,6 +29,6 @@ exports.scrapRikishis = function (htmltext, sumodbhost, callback) {
     }
   });
 
-  callback(result);
+  return result;
 
 };
