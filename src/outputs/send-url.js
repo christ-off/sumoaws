@@ -29,7 +29,7 @@ module.exports.addUrls = function (urls) {
 
 /**
  * Send a SNS message with url as a message
- * @return SNS post result
+ * @returns number of urls sent in message
  */
 module.exports.sendUrls = async () => {
 
@@ -40,15 +40,16 @@ module.exports.sendUrls = async () => {
     TopicArn: `arn:aws:sns:eu-west-3:${config.awsAccountId}:` + TOPIC,
   };
 
-  let result;
   try {
-    result = await aws.publishPromise(params);
+    let nbSent = urlsToSend.length;
+    let result = await aws.publishPromise(params);
     urlsToSend = [];
-    console.log(`Sent SNS Message with params : ${JSON.stringify(params)}, response : ${JSON.stringify(data)}`);
+    console.log(`Sent SNS Message with params : ${JSON.stringify(params)}, response : ${JSON.stringify(result)}`);
+    return nbSent;
   } catch (error) {
     // In case of error we don't empty urlsToSend (to allow another try )
     console.error(`Error notifying ${urlsToSend.length} urls with message ${error.message}`);
     console.error(error);
+    return 0;
   }
-  return result;
 };
