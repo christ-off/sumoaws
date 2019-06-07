@@ -8,7 +8,6 @@ const nock = require('nock');
 const dotenv = require('dotenv');
 const fs = require('fs');
 
-const LINK = 'http://sumodb.sumogames.de/Rikishi.aspx?r=1123';
 let rikishisHtml;
 
 /**
@@ -18,56 +17,36 @@ const sender = require('../../src/outputs/send-url');
 jest.mock('../../src/outputs/send-url');
 
 
-describe('Execute Lambda without necessary env FIRST', () => {
+describe('Execute handlerrikishis Lambda without necessary env FIRST', () => {
 
-  test('Without env an error should be sent back', done => {
-
-    function callback(error, data) {
-      // Then
-      expect(error).toBeDefined();
-      expect(data).toBeUndefined();
-      done();
-    }
-
-    //When
-    handler.startscrap(null, null, callback);
+  test('Without env an error should be sent back', async () => {
+    expect.assertions(1);
+    // WHEN
+    let result = await handler.startscrap(null, null);
+    // THEN
+    expect(result).toBe(0);
   });
 
 });
 
-describe('Execute Lambda in Mock env', () => {
+describe('Execute handlerrikishis Lambda in Mock env', () => {
 
   beforeAll(() => {
     dotenv.config();
     rikishisHtml = fs.readFileSync('_tests_/rikishis.html');
   });
 
-  beforeEach(() => {
+  test('Get should return the expected content', async () => {
+    expect.assertions(2);
+    // GIVEN
+    const NUMBER_OF_RIKISHIS = 105;
     nock(process.env['SUMODB_HOST']).get(process.env['RIKISHIS_PATH']).reply(200, rikishisHtml);
-  });
-
-  test('Get should return the expected content', done => {
-
-    // Given
-    sender.sendUrls.mockImplementation((errorCallback, successCallback) => {
-      successCallback("DONE");
-    });
+    sender.sendUrls.mockImplementation(() => { return NUMBER_OF_RIKISHIS; } );
     sender.addUrl.mockImplementation(() => { });
-
-    function callback(error, data) {
-      // Then
-
-      const NUMBER_OF_RIKISHIS = 105;
-      expect(sender.sendUrls.mock.calls.length).toBe(1);
-      expect(data).toBeDefined();
-      expect(data.length).toBe(NUMBER_OF_RIKISHIS);
-      expect(data[0]).toBe(LINK);
-      // Jest end of test
-      done();
-    }
-
-    //When
-    handler.startscrap(null, null, callback);
+    // WHEN
+    let data = await handler.startscrap(null, null);
+    expect(sender.sendUrls.mock.calls.length).toBe(1);
+    expect(data).toBe(NUMBER_OF_RIKISHIS);
   });
 
 });

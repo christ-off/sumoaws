@@ -11,6 +11,11 @@ const ranks = require("./ranks");
  */
 exports.scrapRikishis = async (htmltext, sumodbhost) => {
 
+  if (!htmltext || htmltext.length ===0 ){
+    console.warn("Rikishis : No html to scrap. Returning null");
+    return null;
+  }
+
   console.log(`Scrapping content : ${htmltext.length} bytes`);
 
   let result = [];
