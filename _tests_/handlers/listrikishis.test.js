@@ -11,29 +11,19 @@ describe('Execute Lambda in Mock env', () => {
     dotenv.config();
   });
 
-  test('Get should return the expected content', done => {
-
-    // Given
+  test('Get should return the expected content', async () => {
+    expect.assertions(2);
+    // GIVEN
     let expectedItems = [ { id: "1123"}, { id: "1124"} ];
-    aws.dynamoDb.scan = jest.fn().mockImplementation(
-      (params, callback) => {
-        callback(null, { Items: expectedItems });
-      }
-    );
+    aws.scanPromise = jest.fn().mockImplementation( () => { return { Items: expectedItems }; } );
     const expectedParams = {
       TableName: process.env['DYNAMODB_TABLE']
     };
-
-    // Then
-    function callback(error, data) {
-      //
-      expect(aws.dynamoDb.scan.mock.calls[0][0]).toEqual(expectedParams);
-      expect(data).toEqual({"body": "[{\"id\":\"1123\"},{\"id\":\"1124\"}]", "statusCode": 200});
-      // Jest end of test
-      done();
-    }
-    //When
-    handler.get(null, null, callback);
+    // WHEN
+    let data = await handler.get(null, null);
+    // THEN
+    expect(aws.scanPromise.mock.calls[0][0]).toEqual(expectedParams);
+    expect(data).toEqual({"body": "[{\"id\":\"1123\"},{\"id\":\"1124\"}]", "statusCode": 200});
   });
 
 });

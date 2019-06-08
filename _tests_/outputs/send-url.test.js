@@ -21,11 +21,7 @@ describe('Sending URLs', () => {
   test('Nominal case', async () => {
     expect.assertions(4);
     // GIVEN
-    aws.publishPromise = jest.fn().mockImplementation(() => {
-      return new Promise((resolve) => {
-        process.nextTick(() => resolve("POSTED"));
-      });
-    });
+    aws.publishPromise = jest.fn().mockImplementation(() => { return "POSTED"; });
     // WHEN
     tested.addUrl(SENT_URL);
     tested.addUrl(SENT_URL);
