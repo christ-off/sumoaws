@@ -7,13 +7,7 @@ const handler = require('../../src/handlers/handlerrikishi');
 const nock = require('nock');
 const dotenv = require('dotenv');
 const fs = require('fs');
-const dayjs = require("dayjs");
-const customParseFormat = require("dayjs/plugin/customParseFormat");
-const utc = require("dayjs/plugin/utc");
-
-dayjs.extend(customParseFormat);
-dayjs.extend(utc);
-
+const moment = require('moment');
 
 /**
  * The "creator" creates records in DynamoDB
@@ -118,7 +112,7 @@ describe('Test Rikishi handler and utils', () => {
     expect(data).toBe("SAVED");
     expect(creator.create).toBeCalled();
     expect(creator.create.mock.calls[0][0].id).toBe(1123);
-    expect(creator.create.mock.calls[0][0].birthdate).toEqual(dayjs.utc("1985-03-11").toISOString());
+    expect(creator.create.mock.calls[0][0].birthdate).toEqual(moment.utc("1985-03-11").toISOString());
   });
 
   test('Get should NOT create an unsupported rikishi', async () => {

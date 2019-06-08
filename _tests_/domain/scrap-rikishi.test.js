@@ -1,31 +1,21 @@
 const handler = require('../../src/domain/scrap-rikishi');
 const fs = require('fs');
-const dayjs = require("dayjs");
-const customParseFormat = require("dayjs/plugin/customParseFormat");
-const utc = require("dayjs/plugin/utc");
-
-dayjs.extend(customParseFormat);
-dayjs.extend(utc);
-
+const moment = require('moment');
 
 describe('Testing Lambda and util functions on Rikishis', () => {
 
-  test('should output rikishi data', async () => {
-
+  test('should output Hakuho data', async () => {
     expect.assertions(12);
-
     // GIVEN
     let rikishiHtml = fs.readFileSync('_tests_/hakuho.html');
-
-    //When
+    // WHEN
     let data = await handler.scrapRikishi(42, rikishiHtml);
-
-    // Then
+    // THEN
     expect(data).toBeDefined();
     expect(data.id).toBe(42);
     expect(data.highestrank).toBe("Yokozuna");
     expect(data.realname).toBe("MÖNKHBAT Davaajargal");
-    expect(data.birthdate).toEqual(dayjs.utc("1985-03-11").toISOString());
+    expect(data.birthdate).toEqual(moment.utc("1985-03-11").toISOString());
     expect(data.shusshin).toBe("Mongolia, Ulan-Bator");
     expect(data.height).toBe(192);
     expect(data.weight).toBe(152.9);
@@ -33,8 +23,27 @@ describe('Testing Lambda and util functions on Rikishis', () => {
     expect(data.shikona).toBe("Hakuho");
     expect(data.rank).toBe("Y1e");
     expect(data.division).toBe("Makuuchi");
+  });
 
-
+  test('should output Goeido data', async () => {
+    expect.assertions(12);
+    // GIVEN
+    let rikishiHtml = fs.readFileSync('_tests_/goeido.html');
+    // WHEN
+    let data = await handler.scrapRikishi(42, rikishiHtml);
+    // THEN
+    expect(data).toBeDefined();
+    expect(data.id).toBe(42);
+    expect(data.highestrank).toBe("Ozeki");
+    expect(data.realname).toBe("SAWAI Gotaro");
+    expect(data.birthdate).toEqual(moment.utc("1986-04-06").toISOString());
+    expect(data.shusshin).toBe("Osaka-fu, Neyagawa-shi");
+    expect(data.height).toBe(183);
+    expect(data.weight).toBe(158.2);
+    expect(data.heya).toBe("Sakaigawa");
+    expect(data.shikona).toBe("Goeido");
+    expect(data.rank).toBe("O1e");
+    expect(data.division).toBe("Makuuchi");
   });
 
   test('should output null on excluded Rikishi', async () => {
@@ -59,8 +68,9 @@ describe('Testing Lambda and util functions on Rikishis', () => {
   });
 
   test('Birthdates', () => {
-    expect(handler.parseBirthdate("March 11, 1985 (34 years)")).toEqual(dayjs.utc("1985-03-11").toISOString());
-    expect(handler.parseBirthdate("July 24, 1972")).toEqual(dayjs.utc("1972-07-24").toISOString());
+    expect(handler.parseBirthdate("April 6, 1986 (33 years)")).toEqual(moment.utc("1986-04-06").toISOString());
+    expect(handler.parseBirthdate("March 11, 1985 (34 years)")).toEqual(moment.utc("1985-03-11").toISOString());
+    expect(handler.parseBirthdate("July 24, 1972")).toEqual(moment.utc("1972-07-24").toISOString());
     expect(handler.parseBirthdate("")).toBeNull();
   });
 

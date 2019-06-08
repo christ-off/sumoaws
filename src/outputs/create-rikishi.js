@@ -1,12 +1,7 @@
 'use strict';
 
 const aws = require('../provider/aws');
-const dayjs = require("dayjs");
-const customParseFormat = require("dayjs/plugin/customParseFormat");
-const utc = require("dayjs/plugin/utc");
-
-dayjs.extend(customParseFormat);
-dayjs.extend(utc);
+const moment = require('moment');
 
 /**
  * Create OR update a rikishi in DynamoDB
@@ -25,7 +20,7 @@ module.exports.create = async (rikishi) => {
   params = {};
   params.TableName = process.env['DYNAMODB_TABLE'];
   params.Item = rikishi;
-  params.Item.createdAt = dayjs.utc().toISOString();
+  params.Item.createdAt = moment.utc().toISOString();
   params.Item.updatedAt = params.Item.createdAt;
 
   try {

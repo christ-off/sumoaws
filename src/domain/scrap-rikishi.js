@@ -1,13 +1,8 @@
 'use strict';
 
 const cheerio = require("cheerio");
-const dayjs = require("dayjs");
-const customParseFormat = require("dayjs/plugin/customParseFormat");
-const utc = require("dayjs/plugin/utc");
+const moment = require('moment');
 const ranks = require("./ranks");
-
-dayjs.extend(customParseFormat);
-dayjs.extend(utc);
 
 /**
  * Will process an html text async to get a Rikishi :
@@ -135,7 +130,7 @@ exports.parseBirthdate = function (brutetext) {
   // DO
   let arr = birthdateRegExp.exec(brutetext);
   if (arr && arr.length === 1) {
-    let parsed = dayjs.utc(arr[0], 'MMMM DD YYYY', 'en');
+    let parsed = moment.utc(arr[0], 'MMMM DD YYYY', 'en');
     return parsed.utc().toISOString();
   } else {
     console.log(`Not a birthday : ${brutetext}`);

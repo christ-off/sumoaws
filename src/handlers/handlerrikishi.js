@@ -36,11 +36,13 @@ module.exports.scraprikishi = async (event, context) => {
       let htmlContent = await getter.getContentToScrap(url, null);
       let rikishi = await scrapper.scrapRikishi(id, htmlContent);
       creationResult = await creator.create(rikishi);
+      console.log(`Rikishi creation result ${creationResult}`);
     }
 
     // Send message to SNS to process next rikishi
     sender.addUrls(urls);
-    sender.sendUrls()
+    let countSent = await sender.sendUrls();
+    console.log(`Scrapped a Rikishi. Sent message for ${countSent} next ones`);
 
   } catch (e) {
     console.error(`Error while processing event ${e.message}`);
