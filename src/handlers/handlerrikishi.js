@@ -14,7 +14,7 @@ const util = require('../utils/get-parameter');
  */
 module.exports.scraprikishi = async (event, context) => {
 
-  console.log(`Received ${event}`);
+  console.log(`Received ${JSON.stringify(event)}`);
 
   let creationResult = null;
 
@@ -36,7 +36,7 @@ module.exports.scraprikishi = async (event, context) => {
       let htmlContent = await getter.getContentToScrap(url, null);
       let rikishi = await scrapper.scrapRikishi(id, htmlContent);
       creationResult = await creator.create(rikishi);
-      console.log(`Rikishi creation result ${creationResult}`);
+      console.log(`Rikishi creation result ${JSON.stringify(creationResult)}`);
     }
 
     // Send message to SNS to process next rikishi
