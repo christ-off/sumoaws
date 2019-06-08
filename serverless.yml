@@ -97,6 +97,12 @@ resources:
 
 package:
   exclude:
-    - _site
-    - _tests_
+    - _site/**
+    - _tests_/**
     - .env
+    - etc/**
+    - coverage/**
+    - .editorconfig
+    - .gitattributes
+    - README.md
+    - SumoAWS.iml
