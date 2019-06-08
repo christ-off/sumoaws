@@ -12,4 +12,8 @@ describe('Test Rikishi handler and utils', () => {
     expect(handler.getParameter("http://sumodb.sumogames.de/Rikishi.aspx?r=1123", "TOTO")).toBeFalsy();
   });
 
+  test('Returning false on empty url', () => {
+    expect(handler.getParameter(null, "TOTO")).toBeFalsy();
+  });
+
 });

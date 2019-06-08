@@ -32,7 +32,7 @@ describe('Sending URLs', () => {
     let data = await tested.sendUrls();
     // THEN
     expect(data).toBeDefined();
-    expect(data).toBe("POSTED");
+    expect(data).toBe(2);
     expect(aws.publishPromise.mock.calls.length).toBe(1);
     expect(aws.publishPromise.mock.calls[0][0]).toEqual(PARAMS);
   });
@@ -45,6 +45,6 @@ describe('Sending URLs', () => {
     tested.addUrl(SENT_URL);
     let data = await tested.sendUrls();
     // THEN
-    expect(data).toBeUndefined();
+    expect(data).toBe(0);
   });
 });

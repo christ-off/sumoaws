@@ -23,7 +23,7 @@ const creator = require('../../src/outputs/create-rikishi');
 /**
  * Let jest mock it
  */
-jest.mock('../../src/outputs/create-rikishi' );
+jest.mock('../../src/outputs/create-rikishi');
 
 let goodRikishiHtml;
 let badRikishiHtml;
@@ -39,7 +39,7 @@ const goodRikishiEvent = {
         "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
         "TopicArn": "arn:aws:sns:eu-west-3:123456789012:ExampleTopic",
         "Subject": "example subject",
-        "Message": "http://sumodb.sumogames.de/Rikishi.aspx?r=1123",
+        "Message": "[ \"http://sumodb.sumogames.de/Rikishi.aspx?r=1123\" ]",
         "Timestamp": "1970-01-01T00:00:00.000Z",
         "SignatureVersion": "1",
         "Signature": "EXAMPLE",
@@ -71,7 +71,7 @@ const badRikishiEvent = {
         "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
         "TopicArn": "arn:aws:sns:eu-west-3:123456789012:ExampleTopic",
         "Subject": "example subject",
-        "Message": "http://sumodb.sumogames.de/Rikishi.aspx?r=12140",
+        "Message": "[ \"http://sumodb.sumogames.de/Rikishi.aspx?r=12140\" ]",
         "Timestamp": "1970-01-01T00:00:00.000Z",
         "SignatureVersion": "1",
         "Signature": "EXAMPLE",
@@ -97,68 +97,51 @@ describe('Test Rikishi handler and utils', () => {
   beforeAll(() => {
     dotenv.config();
     //
-    goodRikishiHtml = fs.readFileSync( '_tests_/hakuho.html');
-    badRikishiHtml = fs.readFileSync( '_tests_/takaryu_naoya.html');
+    goodRikishiHtml = fs.readFileSync('_tests_/hakuho.html');
+    badRikishiHtml = fs.readFileSync('_tests_/takaryu_naoya.html');
     //
   });
 
-  test('Nominal extract of query string parameter', () => {
-    expect(handler.getParameter("http://sumodb.sumogames.de/Rikishi.aspx?r=1123", "r")).toBe("1123");
-  });
-
-  test('Impossible extract of query string parameter', () => {
-    expect(handler.getParameter("http://sumodb.sumogames.de/Rikishi.aspx?r=1123", "TOTO")).toBeFalsy();
-  });
-
-  test('Get should create a supported rikishi', done => {
-
-    // Given
+  test('Get should create a supported rikishi', async () => {
+    expect.assertions(5);
+    // GIVEN
     nock(process.env['SUMODB_HOST']).get("/Rikishi.aspx?r=1123").reply(200, goodRikishiHtml);
-    creator.create.mockImplementation( (rikishi, fail, success) => { success("SAVED"); });
-
-    function callback(error, data) {
-      // Then
-      expect(data).toBeDefined();
-      expect(data).toBe("SAVED");
-      expect(creator.create).toBeCalled();
-      expect(creator.create.mock.calls[0][0].id).toBe(1123);
-      expect(creator.create.mock.calls[0][0].birthdate).toEqual(dayjs.utc("1985-03-11").toISOString());
-      // Jest end of test
-      done();
-    }
-
-    //When
-    handler.scraprikishi(goodRikishiEvent, null, callback);
+    creator.create.mockImplementation(() => {
+      return new Promise((resolve) => {
+        process.nextTick(() => resolve("SAVED"));
+      });
+    });
+    // WHEN
+    let data = await handler.scraprikishi(goodRikishiEvent, null);
+    // THEN
+    expect(data).toBeDefined();
+    expect(data).toBe("SAVED");
+    expect(creator.create).toBeCalled();
+    expect(creator.create.mock.calls[0][0].id).toBe(1123);
+    expect(creator.create.mock.calls[0][0].birthdate).toEqual(dayjs.utc("1985-03-11").toISOString());
   });
 
-  test('Get should NOT create an unsupported rikishi', done => {
-
-    // Given
+  test('Get should NOT create an unsupported rikishi', async () => {
+    expect.assertions(2);
+    // GIVEN
     nock(process.env['SUMODB_HOST']).get("/Rikishi.aspx?r=12140").reply(200, badRikishiHtml);
-
-    function callback(error, data) {
-      // Then
-      expect(data).toBeNull();
-      // Jest end of test
-      done();
-    }
-
-    //When
-    handler.scraprikishi(badRikishiEvent, null, callback);
+    creator.create.mockClear();
+    creator.create.mockImplementation(() => {
+      return new Promise((resolve) => {
+        process.nextTick(() => resolve(null));
+      });
+    });
+    // WHEN
+    let data = await handler.scraprikishi(badRikishiEvent, null);
+    // THEN
+    expect(data).toBeNull();
+    expect(creator.create.mock.calls[0][0]).toBeNull();
   });
 
-  test('Get should return an error if content from url is missing', done => {
-
+  test('Get should return an error if content from url is missing', async () => {
+    expect.assertions(2);
+    // GIVEN
     nock(process.env['SUMODB_HOST']).get("/Rikishi.aspx?r=0").reply(404);
-
-    function callback(error) {
-      // Then
-      expect(error).toBeDefined();
-      // Jest end of test
-      done();
-    }
-
-    //When
     const badEvent = {
       "Records": [
         {
@@ -170,7 +153,7 @@ describe('Test Rikishi handler and utils', () => {
             "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
             "TopicArn": "arn:aws:sns:eu-west-3:123456789012:ExampleTopic",
             "Subject": "example subject",
-            "Message": "http://sumodb.sumogames.de/Rikishi.aspx?r=0",
+            "Message": "[ \"http://sumodb.sumogames.de/Rikishi.aspx?r=0\" ]",
             "Timestamp": "1970-01-01T00:00:00.000Z",
             "SignatureVersion": "1",
             "Signature": "EXAMPLE",
@@ -190,20 +173,22 @@ describe('Test Rikishi handler and utils', () => {
         }
       ]
     };
-
-    handler.scraprikishi(badEvent, null, callback);
+    creator.create.mockClear();
+    creator.create.mockImplementation(() => {
+      return new Promise((resolve) => {
+        process.nextTick(() => resolve(null));
+      });
+    });
+    // WHEN
+    let data = await handler.scraprikishi(badEvent, null);
+    // THEN
+    expect(data).toBeNull();
+    expect(creator.create.mock.calls[0][0]).toBeNull();
   });
 
-  test('Get should return an error with event missing URL', done => {
-
-    function callback(error) {
-      // Then
-      expect(error).toBeDefined();
-      // Jest end of test
-      done();
-    }
-
-    //When
+  test('Get should return null with event missing URL', async () => {
+    expect.assertions(1);
+    // GIVEN
     const badEvent = {
       "Records": [
         {
@@ -235,23 +220,20 @@ describe('Test Rikishi handler and utils', () => {
         }
       ]
     };
-
-    handler.scraprikishi(badEvent, null, callback);
+    // WHEN
+    let data = await handler.scraprikishi(badEvent, null);
+    // THEN
+    expect(data).toBeNull();
   });
 
-  test('Get should return an error with fake event ', done => {
-
-    function callback(error) {
-      // Then
-      expect(error).toBeDefined();
-      // Jest end of test
-      done();
-    }
-
-    //When
-    const fakeEvent = { };
-
-    handler.scraprikishi(fakeEvent, null, callback);
+  test('Get should return an null with empty event ', async () => {
+    expect.assertions(1);
+    // GIVEN
+    const fakeEvent = {};
+    // WHEN
+    let data = await handler.scraprikishi(fakeEvent, null);
+    // THEN
+    expect(data).toBeNull();
   });
 
 });
