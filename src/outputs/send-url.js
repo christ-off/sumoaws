@@ -46,6 +46,7 @@ module.exports.sendUrls = async () => {
       console.warn("No URL to send. Returning 0");
       return 0;
     }
+    console.log(`Going SNS Message with params : ${JSON.stringify(params)}`);
     let result = await aws.publishPromise(params);
     urlsToSend = [];
     console.log(`Sent SNS Message with params : ${JSON.stringify(params)}, response : ${JSON.stringify(result)}`);

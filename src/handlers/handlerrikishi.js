@@ -14,6 +14,8 @@ const util = require('../utils/get-parameter');
  */
 module.exports.scraprikishi = async (event, context) => {
 
+  console.log(`Received ${event}`);
+
   let creationResult = null;
 
   try {
@@ -27,7 +29,7 @@ module.exports.scraprikishi = async (event, context) => {
     // Prepare what we are working on
     let url = urls.shift(); // return 1st element, removes it from array
     let id = parseInt(util.getParameter(url,"r"));
-    console.log(`Received ${url} id : ${id}`);
+    console.log(`Received ${url}, id : ${id}, ${urls.length} URLS Remaining`);
 
     // START
     if (url && url.length > 0) {

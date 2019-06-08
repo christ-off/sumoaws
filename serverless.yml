@@ -48,7 +48,6 @@ functions:
   scraprikishi:
     handler: src/handlers/handlerrikishi.scraprikishi
     description: When trigger by SNS message containing url, will scrap one rikishi and stores into DynamoDB
-    reservedConcurrency: 0 # cold start is not a problem, being cost effective is good
     events:
       - sns: scraprikishi
 

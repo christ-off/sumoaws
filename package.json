@@ -16,10 +16,11 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "dayjs": "^1.8.14",
+    "request": "^2.88.0",
     "request-promise": "^4.2.4"
   },
   "devDependencies": {
-    "aws-sdk": "^2.470.0",
+    "aws-sdk": "^2.471.0",
     "dotenv": "^8.0.0",
     "fs": "0.0.1-security",
     "jest": "^24.8.0",
