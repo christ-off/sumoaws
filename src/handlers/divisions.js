@@ -10,7 +10,14 @@ const ranks = require('../domain/ranks');
  * @returns {Promise<*[]>}
  */
 module.exports.getDivisions = async (event, context) => {
-  return ranks.getDivisions();
+  let result = ranks.getDivisions();
+  // create a response
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify(result),
+  };
+  console.log(`Returning divisions ${JSON.stringify(response)}` );
+  return response;
 };
 
 /**
@@ -26,18 +33,17 @@ module.exports.getDivisions = async (event, context) => {
  */
 module.exports.getDivision = async (event, context) => {
 
-  // GIVEN
+  console.log("Going to query Division " + JSON.stringify(event));
+
   const division = event.pathParameters.division;
 
   const params = {
     TableName: process.env['DYNAMODB_TABLE'],
-    FilterExpression: {
-      ":division": division
-    }
+    FilterExpression: "division = :division",
+    ExpressionAttributeValues: { ":division" : division }
   };
-
-  console.log("Going to query " + JSON.stringify(params));
   try {
+    console.log(`Querying division ${JSON.stringify(params)}`);
     let result = await aws.scanPromise(params);
     console.log("getDivision returning " + result.Items.length);
     return {

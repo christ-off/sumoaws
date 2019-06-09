@@ -11,13 +11,12 @@ describe('Testing divisions', () => {
   });
 
   test('Should return the expected divisions', async () => {
-    expect.assertions(3);
+    expect.assertions(2);
     // WHEN
     const result = await handler.getDivisions();
     // THEN
-    expect(result.length).toBe(2);
-    expect(result[0]).toBe("Makuuchi");
-    expect(result[1]).toBe("Juryo");
+    expect(result.statusCode).toBe(200);
+    expect(result.body).toBe("[\"Makuuchi\",\"Juryo\"]");
   });
 
   test('Get should return the expected division', async () => {
@@ -25,10 +24,11 @@ describe('Testing divisions', () => {
     // GIVEN
     const expectedFakeRikishis = { Items : [{id: "1123"}, {id: "1124"}]};
     const expectedParams = {
-      "FilterExpression": {
+      "TableName": "FakeLocalTableName",
+      "FilterExpression": "division = :division",
+      "ExpressionAttributeValues": {
         ":division": "makuuchi"
-      },
-      "TableName": process.env['DYNAMODB_TABLE']
+      }
     };
     aws.scanPromise = jest.fn().mockImplementation(() => { return expectedFakeRikishis; } );
     const event = {pathParameters: {division: "makuuchi"}};

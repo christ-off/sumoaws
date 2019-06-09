@@ -67,7 +67,7 @@ functions:
       - http:
           path: divisions
           method: get
-    cors: true
+          cors: true
 
   division:
     handler: src/handlers/divisions.getDivision
@@ -76,7 +76,7 @@ functions:
       - http:
           path: divisions/{division}
           method: get
-    cors: true
+          cors: true
 
 resources:
   Resources:
