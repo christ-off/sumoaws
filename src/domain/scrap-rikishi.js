@@ -79,6 +79,7 @@ exports.scrapRikishi = async (id, htmltext) => {
   rikishi.division = ranks.getDivision(rikishi.rank);
 
   if (rikishi.division) {
+    rikishi.sort = ranks.getSort(rikishi.rank);
     console.log(`Rikishi done with ${JSON.stringify(rikishi)}`);
     return rikishi;
   } else {

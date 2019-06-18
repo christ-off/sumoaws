@@ -5,7 +5,7 @@ const moment = require('moment');
 describe('Testing Lambda and util functions on Rikishis', () => {
 
   test('should output Hakuho data', async () => {
-    expect.assertions(12);
+    expect.assertions(13);
     // GIVEN
     let rikishiHtml = fs.readFileSync('_tests_/hakuho.html');
     // WHEN
@@ -23,10 +23,11 @@ describe('Testing Lambda and util functions on Rikishis', () => {
     expect(data.shikona).toBe("Hakuho");
     expect(data.rank).toBe("Y1e");
     expect(data.division).toBe("Makuuchi");
+    expect(data.sort).toBe(1);
   });
 
   test('should output Goeido data', async () => {
-    expect.assertions(12);
+    expect.assertions(13);
     // GIVEN
     let rikishiHtml = fs.readFileSync('_tests_/goeido.html');
     // WHEN
@@ -44,6 +45,7 @@ describe('Testing Lambda and util functions on Rikishis', () => {
     expect(data.shikona).toBe("Goeido");
     expect(data.rank).toBe("O1e");
     expect(data.division).toBe("Makuuchi");
+    expect(data.sort).toBe(5);
   });
 
   test('should output null on excluded Rikishi', async () => {

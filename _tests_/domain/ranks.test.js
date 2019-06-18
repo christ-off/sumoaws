@@ -29,4 +29,11 @@ describe('Testing Ranks operations and lookups', () => {
     expect(ranks.getDivision("Ms23w")).toBeNull();
   });
 
+  test('Should sort', () => {
+    expect(ranks.getSort("Y1e")).toBeLessThan(ranks.getSort("Y1w"));
+    expect(ranks.getSort("Y1e")).toBeLessThan(ranks.getSort("J30w"));
+    expect(ranks.getSort("S1w")).toBeLessThan(ranks.getSort("M11e"));
+    expect(ranks.getSort("J1e")).toBeLessThan(ranks.getSort("J30w"));
+  });
+
 });
