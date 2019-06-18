@@ -20,7 +20,7 @@
     "request-promise": "^4.2.4"
   },
   "devDependencies": {
-    "aws-sdk": "^2.471.0",
+    "aws-sdk": "^2.478.0",
     "dotenv": "^8.0.0",
     "fs": "0.0.1-security",
     "jest": "^24.8.0",
