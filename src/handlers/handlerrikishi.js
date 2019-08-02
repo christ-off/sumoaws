@@ -12,10 +12,13 @@ const util = require('../utils/get-parameter');
  * @param context not used
  * @returns result creation or null
  */
-module.exports.scraprikishi = async (event, context) => {
-
+module.exports.scraprikishi = async (event) => {
+  // START
   console.log(`Received ${JSON.stringify(event)}`);
-
+  // GET Env
+  let sumodb_host = process.env['SUMODB_HOST'];
+  let images_path = process.env['IMAGES_PATH'];
+  //
   let creationResult = null;
 
   try {
@@ -31,14 +34,28 @@ module.exports.scraprikishi = async (event, context) => {
     let id = parseInt(util.getParameter(url,"r"));
     console.log(`Received ${url}, id : ${id}, ${urls.length} URLS Remaining`);
 
-    // START
+    // HTML -> RIKISHI
     if (url && url.length > 0) {
       let htmlContent = await getter.getContentToScrap(url, null);
       let rikishi = await scrapper.scrapRikishi(id, htmlContent);
       creationResult = await creator.create(rikishi);
       console.log(`Rikishi creation result ${JSON.stringify(creationResult)}`);
-    }
 
+      // IMAGE -> S3
+      let imagePath = images_path + id + '.jpg';
+      // Let's say first that rikishi image is coming from website
+      rikishi.imagePath = sumodb_host + imagePath;
+      // Then try to download it
+      let image = await getter.getContentToScrap(sumodb_host, imagePath);
+      if (image) {
+        console.log(`Image ${image.length}received from ${imagePath}`);
+      } else {
+        rikishi.imagePath = null;
+        console.warn('No image avalaible. Setting it to null');
+      }
+
+
+    }
     // Send message to SNS to process next rikishi
     sender.addUrls(urls);
     let countSent = await sender.sendUrls();

@@ -13,6 +13,7 @@ provider:
     # sumodb.sumogames.de => Rikishi list : Active, By Highest rank desc
     SUMODB_HOST: "http://sumodb.sumogames.de"
     RIKISHIS_PATH: "/Rikishi.aspx?shikona=&heya=-1&shusshin=-1&b=-1&high=-1&hd=-1&entry=-1&intai=999999&sort=5"
+    IMAGES_PATH: "/pics/"
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}-RIKISHIS
 
   iamRoleStatements:

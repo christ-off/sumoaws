@@ -14,9 +14,9 @@ exports.getContentToScrap = async (host, path) => {
   const url = host + (path ? path : "");
   console.log(`Going to get : ${url}`);
   try {
-    let html = await rp(url);
-    console.log(`All data retrieved ${html.length} bytes`);
-    return html;
+    let content = await rp(url);
+    console.log(`All data retrieved ${content.length} bytes`);
+    return content;
   } catch (e) {
     console.error(`Unexpected http error${e.message}`);
     console.error(e);

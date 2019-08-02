@@ -21,6 +21,7 @@ jest.mock('../../src/outputs/create-rikishi');
 
 let goodRikishiHtml;
 let badRikishiHtml;
+let goodRikishiPic;
 
 const goodRikishiEvent = {
   "Records": [
@@ -93,13 +94,15 @@ describe('Test Rikishi handler and utils', () => {
     //
     goodRikishiHtml = fs.readFileSync('_tests_/hakuho.html');
     badRikishiHtml = fs.readFileSync('_tests_/takaryu_naoya.html');
+    goodRikishiPic = fs.readFileSync('_tests_/1123.jpg');
     //
   });
 
-  test('Get should create a supported rikishi', async () => {
-    expect.assertions(5);
+  test('Get should create a supported rikishi with image', async () => {
+    expect.assertions(6);
     // GIVEN
     nock(process.env['SUMODB_HOST']).get("/Rikishi.aspx?r=1123").reply(200, goodRikishiHtml);
+    nock(process.env['SUMODB_HOST']).get("/pics/1123.jpg").reply(200, goodRikishiPic);
     creator.create.mockImplementation(() => {
       return new Promise((resolve) => {
         process.nextTick(() => resolve("SAVED"));
@@ -112,7 +115,28 @@ describe('Test Rikishi handler and utils', () => {
     expect(data).toBe("SAVED");
     expect(creator.create).toBeCalled();
     expect(creator.create.mock.calls[0][0].id).toBe(1123);
+    expect(creator.create.mock.calls[0][0].imagePath).toBe('http://sumodb.sumogames.de/pics/1123.jpg');
     expect(creator.create.mock.calls[0][0].birthdate).toEqual(moment.utc("1985-03-11").toISOString());
+  });
+
+  test('Get should create a supported rikishi without image', async () => {
+    expect.assertions(5);
+    // GIVEN
+    nock(process.env['SUMODB_HOST']).get("/Rikishi.aspx?r=1123").reply(200, goodRikishiHtml);
+    nock(process.env['SUMODB_HOST']).get("/pics/1123.jpg").reply(404);
+    creator.create.mockImplementation(() => {
+      return new Promise((resolve) => {
+        process.nextTick(() => resolve("SAVED"));
+      });
+    });
+    // WHEN
+    let data = await handler.scraprikishi(goodRikishiEvent, null);
+    // THEN
+    expect(data).toBeDefined();
+    expect(data).toBe("SAVED");
+    expect(creator.create).toBeCalled();
+    expect(creator.create.mock.calls[0][0].id).toBe(1123);
+    expect(creator.create.mock.calls[0][0].imagePath).toBeNull();
   });
 
   test('Get should NOT create an unsupported rikishi', async () => {
