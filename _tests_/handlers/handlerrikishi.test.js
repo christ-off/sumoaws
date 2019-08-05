@@ -55,6 +55,38 @@ const goodRikishiEvent = {
   ]
 };
 
+const goodRikishiEventWithoutImage = {
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:eu-west-3:{{accountId}}:ExampleTopic",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
+        "TopicArn": "arn:aws:sns:eu-west-3:123456789012:ExampleTopic",
+        "Subject": "example subject",
+        "Message": "[ \"http://sumodb.sumogames.de/Rikishi.aspx?r=1234\" ]",
+        "Timestamp": "1970-01-01T00:00:00.000Z",
+        "SignatureVersion": "1",
+        "Signature": "EXAMPLE",
+        "SigningCertUrl": "EXAMPLE",
+        "UnsubscribeUrl": "EXAMPLE",
+        "MessageAttributes": {
+          "Test": {
+            "Type": "String",
+            "Value": "TestString"
+          },
+          "TestBinary": {
+            "Type": "Binary",
+            "Value": "TestBinary"
+          }
+        }
+      }
+    }
+  ]
+};
+
 const badRikishiEvent = {
   "Records": [
     {
@@ -98,6 +130,10 @@ describe('Test Rikishi handler and utils', () => {
     //
   });
 
+  beforeEach( () => {
+    jest.resetAllMocks();
+  });
+
   test('Get should create a supported rikishi with image', async () => {
     expect.assertions(6);
     // GIVEN
@@ -122,20 +158,20 @@ describe('Test Rikishi handler and utils', () => {
   test('Get should create a supported rikishi without image', async () => {
     expect.assertions(5);
     // GIVEN
-    nock(process.env['SUMODB_HOST']).get("/Rikishi.aspx?r=1123").reply(200, goodRikishiHtml);
-    nock(process.env['SUMODB_HOST']).get("/pics/1123.jpg").reply(404);
+    nock(process.env['SUMODB_HOST']).get("/Rikishi.aspx?r=1234").reply(200, goodRikishiHtml);
+    nock(process.env['SUMODB_HOST']).get("/pics/1234.jpg").reply(404);
     creator.create.mockImplementation(() => {
       return new Promise((resolve) => {
         process.nextTick(() => resolve("SAVED"));
       });
     });
     // WHEN
-    let data = await handler.scraprikishi(goodRikishiEvent, null);
+    let data = await handler.scraprikishi(goodRikishiEventWithoutImage, null);
     // THEN
     expect(data).toBeDefined();
     expect(data).toBe("SAVED");
     expect(creator.create).toBeCalled();
-    expect(creator.create.mock.calls[0][0].id).toBe(1123);
+    expect(creator.create.mock.calls[0][0].id).toBe(1234);
     expect(creator.create.mock.calls[0][0].imagePath).toBeNull();
   });
 
