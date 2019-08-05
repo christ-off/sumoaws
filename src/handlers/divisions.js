@@ -2,21 +2,22 @@
 
 const aws = require('../provider/aws');
 const ranks = require('../domain/ranks');
+const disabler = require('../utils/console-disabler');
 
 /**
  * Return the array of supported divisions
- * @param event
- * @param context
  * @returns {Promise<*[]>}
  */
-module.exports.getDivisions = async (event, context) => {
+module.exports.getDivisions = async () => {
   let result = ranks.getDivisions();
   // create a response
   const response = {
     statusCode: 200,
     body: JSON.stringify(result),
   };
-  console.log(`Returning divisions ${JSON.stringify(response)}` );
+  if (disabler.isConsoleLogEnabled()) {
+    console.log(`Returning divisions ${JSON.stringify(response)}`);
+  }
   return response;
 };
 
@@ -28,13 +29,13 @@ module.exports.getDivisions = async (event, context) => {
  * On a way to avoid callbacks !
  * https://aws.amazon.com/blogs/compute/node-js-8-10-runtime-now-available-in-aws-lambda/
  * @param event
- * @param context
  * @returns {Promise<void>}
  */
-module.exports.getDivision = async (event, context) => {
+module.exports.getDivision = async (event) => {
 
-  console.log("Going to query Division " + JSON.stringify(event));
-
+  if (disabler.isConsoleLogEnabled()) {
+    console.log("Going to query Division " + JSON.stringify(event));
+  }
   const division = event.pathParameters.division;
 
   const params = {
@@ -43,9 +44,13 @@ module.exports.getDivision = async (event, context) => {
     ExpressionAttributeValues: { ":division" : division }
   };
   try {
-    console.log(`Querying division ${JSON.stringify(params)}`);
+    if (disabler.isConsoleLogEnabled()) {
+      console.log(`Querying division ${JSON.stringify(params)}`);
+    }
     let result = await aws.scanPromise(params);
-    console.log("getDivision returning " + result.Items.length);
+    if (disabler.isConsoleLogEnabled()) {
+      console.log("getDivision returning " + result.Items.length);
+    }
     return {
       statusCode: 200,
       body: JSON.stringify(result.Items),

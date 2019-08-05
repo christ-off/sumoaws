@@ -1,8 +1,13 @@
 const handler = require('../../src/domain/scrap-rikishi');
 const fs = require('fs');
 const moment = require('moment');
+const dotenv = require('dotenv');
 
 describe('Testing Lambda and util functions on Rikishis', () => {
+
+  beforeAll(() => {
+    dotenv.config();
+  });
 
   test('should output Hakuho data', async () => {
     expect.assertions(13);

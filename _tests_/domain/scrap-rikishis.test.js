@@ -3,12 +3,14 @@ const handler = require('../../src/domain/scrap-rikishis');
 const EXPECTED_NUMBER_FILTERED_RIKISHIS = 105;
 
 const fs = require('fs');
+const dotenv = require('dotenv');
 
 let rikishisHtml;
 
 describe('Testing Lambda and util functions on Rikishis', () => {
 
   beforeAll(() => {
+    dotenv.config();
     rikishisHtml = fs.readFileSync('_tests_/rikishis.html');
   });
 

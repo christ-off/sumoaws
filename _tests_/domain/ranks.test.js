@@ -1,6 +1,11 @@
 const ranks = require('../../src/domain/ranks');
+const dotenv = require('dotenv');
 
 describe('Testing Ranks operations and lookups', () => {
+
+  beforeAll(() => {
+    dotenv.config();
+  });
 
   test('Should find some Makuuchi', () => {
     expect(ranks.getDivision("Y1e")).toBe("Makuuchi");

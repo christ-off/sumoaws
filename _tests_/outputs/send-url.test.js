@@ -6,6 +6,8 @@
 const tested = require('../../src/outputs/send-url');
 const config = require('../../src/config/config');
 const aws = require('../../src/provider/aws');
+const dotenv = require('dotenv');
+
 // Let's mock aws "provider"
 jest.mock('../../src/provider/aws');
 
@@ -17,6 +19,10 @@ const PARAMS = {
 };
 
 describe('Sending URLs', () => {
+
+  beforeAll(() => {
+    dotenv.config();
+  });
 
   test('Nominal case', async () => {
     expect.assertions(4);

@@ -16,19 +16,6 @@ let rikishisHtml;
 const sender = require('../../src/outputs/send-url');
 jest.mock('../../src/outputs/send-url');
 
-
-describe('Execute handlerrikishis Lambda without necessary env FIRST', () => {
-
-  test('Without env an error should be sent back', async () => {
-    expect.assertions(1);
-    // WHEN
-    let result = await handler.startscrap(null, null);
-    // THEN
-    expect(result).toBe(0);
-  });
-
-});
-
 describe('Execute handlerrikishis Lambda in Mock env', () => {
 
   beforeAll(() => {

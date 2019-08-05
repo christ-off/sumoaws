@@ -2,6 +2,7 @@
 
 const aws = require('../provider/aws');
 const config = require('../config/config');
+const disabler = require('../utils/console-disabler');
 
 const TOPIC = "scraprikishi";
 
@@ -33,7 +34,9 @@ module.exports.addUrls = function (urls) {
  */
 module.exports.sendUrls = async () => {
 
-  console.log(`Going send ${urlsToSend.length} urls`);
+  if (disabler.isConsoleLogEnabled()) {
+    console.log(`Going send ${urlsToSend.length} urls`);
+  }
 
   const params = {
     Message: JSON.stringify(urlsToSend),
@@ -46,15 +49,18 @@ module.exports.sendUrls = async () => {
       console.warn("No URL to send. Returning 0");
       return 0;
     }
-    console.log(`Going SNS Message with params : ${JSON.stringify(params)}`);
+    if (disabler.isConsoleLogEnabled()) {
+      console.log(`Going SNS Message with params : ${JSON.stringify(params)}`);
+    }
     let result = await aws.publishPromise(params);
     urlsToSend = [];
-    console.log(`Sent SNS Message with params : ${JSON.stringify(params)}, response : ${JSON.stringify(result)}`);
+    if (disabler.isConsoleLogEnabled()) {
+      console.log(`Sent SNS Message with params : ${JSON.stringify(params)}, response : ${JSON.stringify(result)}`);
+    }
     return nbSent;
   } catch (error) {
     // In case of error we don't empty urlsToSend (to allow another try )
     console.error(`Error notifying ${urlsToSend.length} urls with message ${error.message}`);
-    console.error(error);
     return 0;
   }
 };

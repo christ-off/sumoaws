@@ -5,10 +5,15 @@
 
 const handler = require('../../src/inputs/get-content-to-scrap');
 const nock = require('nock');
+const dotenv = require('dotenv');
 
 const EXPECTED_RESPONSE = "this is the expected response";
 
 describe('Testing GetRikishi HTTP ', () => {
+
+  beforeAll(() => {
+    dotenv.config();
+  });
 
   test('Get should return the expected content', async () => {
     expect.assertions(2);

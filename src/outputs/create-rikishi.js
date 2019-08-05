@@ -2,6 +2,7 @@
 
 const aws = require('../provider/aws');
 const moment = require('moment');
+const disabler = require('../utils/console-disabler');
 
 /**
  * Create OR update a rikishi in DynamoDB
@@ -14,7 +15,9 @@ module.exports.create = async (rikishi) => {
     return null;
   }
   // else process
-  console.log(`Going to save ${JSON.stringify(rikishi)}`);
+  if (disabler.isConsoleLogEnabled()) {
+    console.log(`Going to save ${JSON.stringify(rikishi)}`);
+  }
 
   let params;
   params = {};
@@ -25,7 +28,9 @@ module.exports.create = async (rikishi) => {
 
   try {
     let result = await aws.putPromise(params);
-    console.log(`Rikishi ${JSON.stringify(rikishi)} saved. response : ${JSON.stringify(result)}`);
+    if (disabler.isConsoleLogEnabled()) {
+      console.log(`Rikishi ${JSON.stringify(rikishi)} saved. response : ${JSON.stringify(result)}`);
+    }
     return result;
   } catch (error) {
     console.error(`Unable to create : ${JSON.stringify(params)} message : ${error.message}`);

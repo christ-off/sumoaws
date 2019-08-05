@@ -2,6 +2,7 @@
 
 // http module doesn't provide async/promise
 const rp = require('request-promise');
+const disabler = require('../utils/console-disabler');
 
 /**
  * Get an URL content and return it in callback call
@@ -12,14 +13,17 @@ const rp = require('request-promise');
 exports.getContentToScrap = async (host, path) => {
 
   const url = host + (path ? path : "");
-  console.log(`Going to get : ${url}`);
+  if (disabler.isConsoleLogEnabled()) {
+    console.log(`Going to get : ${url}`);
+  }
   try {
     let content = await rp(url);
-    console.log(`All data retrieved ${content.length} bytes`);
+    if (disabler.isConsoleLogEnabled()) {
+      console.log(`All data retrieved ${content.length} bytes`);
+    }
     return content;
   } catch (e) {
-    console.error(`Unexpected http error${e.message}`);
-    console.error(e);
+    console.error(`Unexpected http error ${e.message} for ${url}`);
     return null;
   }
 

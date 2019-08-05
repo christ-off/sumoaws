@@ -3,6 +3,7 @@
 const cheerio = require("cheerio");
 const moment = require('moment');
 const ranks = require("./ranks");
+const disabler = require('../utils/console-disabler');
 
 /**
  * Will process an html text async to get a Rikishi :
@@ -20,25 +21,29 @@ const ranks = require("./ranks");
  */
 exports.scrapRikishi = async (id, htmltext) => {
 
-  if (!htmltext || htmltext.length === 0){
+  if (!htmltext || htmltext.length === 0) {
     console.error("Not scraping from null or empty html.  Returning null");
     return null;
   }
   // else process
 
-  console.log(`Scrapping content : ${htmltext.length} bytes`);
+  if (disabler.isConsoleLogEnabled()) {
+    console.log(`Scrapping content : ${htmltext.length} bytes`);
+  }
 
   let rikishi = {};
   rikishi.id = id;
 
-  const $ = cheerio.load(htmltext,  { decodeEntities: false } );
+  const $ = cheerio.load(htmltext, {decodeEntities: false});
 
   // Scrap common Rikishi information
   $('td.layoutright > table.rikishidata > tbody > tr > td > table.rikishidata > tbody > tr ').each(function (i) {
     let children = $(this).children();
     let category = children.eq(0).html();
     let value = children.eq(1).html();
-    console.log(`n° ${i} category ${category} value ${value}`);
+    if (disabler.isConsoleLogEnabled()) {
+      console.log(`n° ${i} category ${category} value ${value}`);
+    }
     switch (category) {
       case "Highest Rank":
         rikishi.highestrank = exports.parseHighestRank(value);
@@ -70,7 +75,7 @@ exports.scrapRikishi = async (id, htmltext) => {
   // Scap rank from the basho table (last line)
   // Let's read all the line and get the rank
   // at the end we have the latest current rank
-  $('.rikishi > tbody > tr').each(function(){
+  $('.rikishi > tbody > tr').each(function () {
     let children = $(this).children();
     rikishi.rank = children.eq(1).html();
   });
@@ -80,10 +85,14 @@ exports.scrapRikishi = async (id, htmltext) => {
 
   if (rikishi.division) {
     rikishi.sort = ranks.getSort(rikishi.rank);
-    console.log(`Rikishi done with ${JSON.stringify(rikishi)}`);
+    if (disabler.isConsoleLogEnabled()) {
+      console.log(`Rikishi done with ${JSON.stringify(rikishi)}`);
+    }
     return rikishi;
   } else {
-    console.log(`Rikishi excluded ${JSON.stringify(rikishi)}`);
+    if (disabler.isConsoleLogEnabled()) {
+      console.log(`Rikishi excluded ${JSON.stringify(rikishi)}`);
+    }
     return null;
   }
 
@@ -177,7 +186,6 @@ exports.parseHeightOrWeight = function (brutetext, index) {
 exports.parseName = function (brutetext) {
   let words = brutetext.split(' ');
   if (words.length <= 1) {
-    console.log(`Unexpected name format : ${brutetext}`);
     return null;
   }
   return words[words.length - 2];
