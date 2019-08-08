@@ -30,12 +30,19 @@ provider:
       Action:
       - "sns:*"
       Resource: "*"
+    - Effect: Allow
+      Action:
+      - s3:PutObject
+      - s3:PutObjectAcl
+      Resource: "arn:aws:s3:::${self:custom.bucket}/*"
 
 custom:
   dev:
     deletion_policy: Delete
   prod:
     deletion_policy: Retain
+  bucket:
+    sumoapp-rikishis-pictures
 
 functions:
 
@@ -49,6 +56,8 @@ functions:
   scraprikishi:
     handler: src/handlers/handlerrikishi.scraprikishi
     description: When trigger by SNS message containing url, will scrap one rikishi and stores into DynamoDB
+    environment:
+      BUCKET: ${self:custom.bucket}
     events:
       - sns: scraprikishi
 
@@ -95,6 +104,12 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+    S3BucketRikishis:
+        Type:  'AWS::S3::Bucket'
+        DeletionPolicy: ${self:custom.${opt:stage, self:provider.stage}.deletion_policy}
+        Properties:
+          BucketName: ${self:custom.bucket}
+          AccessControl: 'PublicRead'
 
 package:
   exclude:
