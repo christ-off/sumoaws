@@ -1,2 +1,5 @@
-_tests_/*.html linguist-vendored
-_tests_/*.jpg linguist-vendored
+_tests_/goeido.html linguist-vendored
+_tests_/hakuho.html linguist-vendored
+_tests_/rikishis.html linguist-vendored
+_tests_/takaryu_naoya.html linguist-vendored
+_site/*  linguist-vendoredk
