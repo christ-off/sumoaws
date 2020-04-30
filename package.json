@@ -5,7 +5,9 @@
   "scripts": {
     "serve": "./server.sh",
     "test": "jest",
-    "test-with-coverage": "jest --coverage"
+    "test-with-coverage": "jest --coverage",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "Christ-off",
   "repository": {
@@ -17,7 +19,8 @@
     "cheerio": "^1.0.0-rc.3",
     "moment": "^2.24.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "aws-sdk": "^2.518.0",
@@ -25,5 +28,6 @@
     "fs": "0.0.1-security",
     "jest": "^24.9.0",
     "nock": "^10.0.6"
-  }
+  },
+  "snyk": true
 }
